@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#F3ECDB">
+<title>双姝集 · Prompt 生成器</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   双姝集 · 新中式美学设计系统
+   ═══════════════════════════════════════════════ */
+
+:root {
+  /* 颜色 —— 宣纸 / 墨 / 朱砂 / 金 */
+  --paper: #F3ECDB;            /* 宣纸底 */
+  --paper-deep: #E8DFC8;       /* 深宣纸 */
+  --paper-soft: #FAF5E8;       /* 浅宣纸 */
+  --ink: #1A1814;              /* 墨色 */
+  --ink-soft: #4A453B;         /* 淡墨 */
+  --ink-faint: #8B826E;        /* 极淡墨 */
+  --cinnabar: #A4202A;         /* 朱砂红(印章色) */
+  --cinnabar-soft: #C44B4F;
+  --gold: #9C7B3E;             /* 金箔 */
+  --gold-soft: #C4A876;
+  --jade: #4A6B5C;             /* 青玉(辅助色) */
+
+  /* 字体 */
+  --font-display: 'Cormorant Garamond', 'Noto Serif SC', serif;
+  --font-serif: 'Noto Serif SC', 'Songti SC', 'STSong', serif;
+  --font-sans: 'Noto Sans SC', -apple-system, 'PingFang SC', sans-serif;
+
+  /* 尺寸 */
+  --r-sm: 4px;
+  --r-md: 8px;
+  --r-lg: 16px;
+  --shadow-soft: 0 2px 12px rgba(26, 24, 20, 0.06);
+  --shadow-card: 0 4px 24px rgba(26, 24, 20, 0.08);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  font-family: var(--font-serif);
+  color: var(--ink);
+  background: var(--paper);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+}
+
+/* 宣纸纹理背景 */
+body {
+  background-image:
+    radial-gradient(ellipse at top left, rgba(156, 123, 62, 0.04), transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(164, 32, 42, 0.03), transparent 50%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  position: relative;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.4 0 0 0 0 0.3 0 0 0 0 0.2 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.6;
+  pointer-events: none;
+  z-index: 0;
+  mix-blend-mode: multiply;
+}
+
+button, input, select, textarea {
+  font-family: inherit; font-size: inherit; color: inherit;
+  border: none; background: none; outline: none;
+}
+button { cursor: pointer; }
+
+/* ═══════════════════════════════════════════════
+   布局
+   ═══════════════════════════════════════════════ */
+
+.app {
+  position: relative;
+  z-index: 1;
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding-bottom: 100px;
+}
+
+/* ─── 顶部 Header ─── */
+.header {
+  padding: 32px 24px 24px;
+  position: relative;
+}
+.header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.title-block { flex: 1; }
+.title-cn {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: 0.15em;
+  color: var(--ink);
+  line-height: 1.1;
+}
+.title-en {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-faint);
+  margin-top: 6px;
+  letter-spacing: 0.02em;
+}
+.seal {
+  flex-shrink: 0;
+  width: 52px; height: 52px;
+  background: var(--cinnabar);
+  color: var(--paper);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 11px;
+  line-height: 1.1;
+  text-align: center;
+  letter-spacing: 0.1em;
+  border-radius: 2px;
+  transform: rotate(-3deg);
+  box-shadow: 0 2px 6px rgba(164,32,42,0.3), inset 0 0 0 1.5px rgba(255,255,255,0.2);
+  position: relative;
+}
+.seal::before {
+  content: '';
+  position: absolute; inset: 3px;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 1px;
+}
+
+.subtitle {
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-sans);
+  font-weight: 300;
+}
+.subtitle::before, .subtitle::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--ink-faint), transparent);
+  opacity: 0.4;
+}
+
+/* ─── Tabs ─── */
+.tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0;
+  border-top: 1px solid rgba(26,24,20,0.1);
+  border-bottom: 1px solid rgba(26,24,20,0.1);
+  margin: 0 24px;
+}
+.tab {
+  padding: 14px 8px;
+  font-family: var(--font-serif);
+  font-size: 14px;
+  letter-spacing: 0.15em;
+  color: var(--ink-faint);
+  text-align: center;
+  position: relative;
+  transition: color 0.2s;
+}
+.tab.active { color: var(--ink); font-weight: 600; }
+.tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 50%;
+  transform: translateX(-50%);
+  width: 24px; height: 2px;
+  background: var(--cinnabar);
+}
+.tab:not(:last-child) { border-right: 1px solid rgba(26,24,20,0.08); }
+
+/* ─── Panels ─── */
+.panel { display: none; padding: 24px; }
+.panel.active { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════════
+   表单(生成 Tab)
+   ═══════════════════════════════════════════════ */
+
+.form-section {
+  margin-bottom: 24px;
+  background: var(--paper-soft);
+  border-radius: var(--r-md);
+  padding: 18px 16px;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid rgba(156,123,62,0.1);
+}
+.section-title {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--cinnabar);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-title::before {
+  content: '';
+  width: 14px; height: 2px;
+  background: var(--cinnabar);
+}
+
+.field {
+  margin-bottom: 14px;
+}
+.field:last-child { margin-bottom: 0; }
+.field-label {
+  display: block;
+  font-size: 12px;
+  font-family: var(--font-sans);
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+  letter-spacing: 0.05em;
+}
+.field-label .en {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 11px;
+  color: var(--ink-faint);
+  margin-left: 6px;
+}
+.field-input, .field-select, .field-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--paper);
+  border: 1px solid rgba(26,24,20,0.12);
+  border-radius: var(--r-sm);
+  font-size: 14px;
+  color: var(--ink);
+  transition: all 0.2s;
+  font-family: var(--font-sans);
+}
+.field-input:focus, .field-select:focus, .field-textarea:focus {
+  border-color: var(--cinnabar);
+  background: var(--paper-soft);
+}
+.field-textarea {
+  resize: vertical;
+  min-height: 60px;
+  line-height: 1.5;
+}
+.field-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238B826E' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+
+/* ─── Preview Box ─── */
+.preview {
+  background: linear-gradient(180deg, var(--paper-soft), var(--paper));
+  border: 1px solid rgba(156,123,62,0.25);
+  border-radius: var(--r-md);
+  padding: 18px 16px;
+  margin-top: 20px;
+  position: relative;
+  box-shadow: var(--shadow-card);
+}
+.preview::before {
+  content: '預覽';
+  position: absolute;
+  top: -10px; left: 16px;
+  background: var(--paper);
+  padding: 0 8px;
+  font-family: var(--font-serif);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--gold);
+}
+.preview-text {
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+  white-space: pre-wrap;
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.preview-text::-webkit-scrollbar { width: 4px; }
+.preview-text::-webkit-scrollbar-thumb {
+  background: rgba(139,130,110,0.3); border-radius: 2px;
+}
+
+/* ─── 按钮 ─── */
+.btn-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+.btn {
+  flex: 1;
+  padding: 13px 18px;
+  border-radius: var(--r-sm);
+  font-family: var(--font-serif);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.btn-primary {
+  background: var(--ink);
+  color: var(--paper);
+}
+.btn-primary:active { background: #000; transform: scale(0.98); }
+.btn-accent {
+  background: var(--cinnabar);
+  color: var(--paper);
+}
+.btn-accent:active { background: #8a1a22; transform: scale(0.98); }
+.btn-outline {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--ink);
+}
+.btn-outline:active { background: var(--ink); color: var(--paper); }
+.btn-ghost {
+  background: rgba(26,24,20,0.05);
+  color: var(--ink);
+}
+.btn-ghost:active { background: rgba(26,24,20,0.1); }
+
+/* ═══════════════════════════════════════════════
+   场景库
+   ═══════════════════════════════════════════════ */
+
+.scene-toolbar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+  align-items: center;
+}
+.scene-toolbar .count {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--ink-faint);
+  margin-right: auto;
+}
+.scene-toolbar .count strong {
+  font-family: var(--font-serif);
+  font-style: normal;
+  font-size: 22px;
+  color: var(--cinnabar);
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+.scene-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.scene-card {
+  background: var(--paper-soft);
+  border: 1px solid rgba(156,123,62,0.15);
+  border-radius: var(--r-md);
+  padding: 16px;
+  position: relative;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-soft);
+}
+.scene-card:active { transform: scale(0.99); }
+.scene-card-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.scene-idx {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 22px;
+  color: var(--gold);
+  line-height: 1;
+}
+.scene-name {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0.05em;
+}
+.scene-name-en {
+  display: block;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 12px;
+  color: var(--ink-faint);
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+.scene-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0 14px;
+}
+.tag {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  padding: 3px 9px;
+  background: rgba(156,123,62,0.12);
+  color: var(--gold);
+  border-radius: 12px;
+  letter-spacing: 0.03em;
+}
+.tag.warm { background: rgba(164,32,42,0.1); color: var(--cinnabar); }
+.tag.cool { background: rgba(74,107,92,0.15); color: var(--jade); }
+.scene-actions {
+  display: flex;
+  gap: 8px;
+}
+.scene-actions .btn {
+  flex: 1;
+  padding: 9px 12px;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+}
+
+/* ─── 新增场景按钮 ─── */
+.add-scene {
+  margin-bottom: 16px;
+  padding: 14px;
+  background: transparent;
+  border: 1.5px dashed rgba(164,32,42,0.4);
+  color: var(--cinnabar);
+  width: 100%;
+  border-radius: var(--r-md);
+  font-family: var(--font-serif);
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  transition: all 0.2s;
+}
+.add-scene:active {
+  background: rgba(164,32,42,0.05);
+  border-color: var(--cinnabar);
+}
+
+/* ═══════════════════════════════════════════════
+   导出
+   ═══════════════════════════════════════════════ */
+
+.export-intro {
+  text-align: center;
+  padding: 20px 0 30px;
+}
+.export-intro .deco {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.export-intro h2 {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.export-intro p {
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.export-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.export-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  background: var(--paper-soft);
+  border: 1px solid rgba(156,123,62,0.15);
+  border-radius: var(--r-md);
+  width: 100%;
+  text-align: left;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-soft);
+}
+.export-card:active {
+  background: var(--paper-deep);
+  transform: scale(0.99);
+}
+.export-icon {
+  flex-shrink: 0;
+  width: 44px; height: 44px;
+  background: var(--ink);
+  color: var(--paper);
+  display: flex; align-items: center; justify-content: center;
+  border-radius: var(--r-sm);
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 0.05em;
+}
+.export-icon.red { background: var(--cinnabar); }
+.export-icon.gold { background: var(--gold); }
+.export-info { flex: 1; }
+.export-title {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+}
+.export-desc {
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+.export-arrow {
+  color: var(--ink-faint);
+  font-size: 18px;
+}
+
+/* ═══════════════════════════════════════════════
+   Modal(编辑 / 新增场景)
+   ═══════════════════════════════════════════════ */
+
+.modal-mask {
+  position: fixed; inset: 0;
+  background: rgba(26,24,20,0.6);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: flex-end;
+  z-index: 100;
+}
+.modal-mask.show { display: flex; animation: maskIn 0.2s ease; }
+@keyframes maskIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal {
+  background: var(--paper);
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  max-height: 90vh;
+  border-radius: 16px 16px 0 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.modal-header {
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(26,24,20,0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--paper-soft);
+}
+.modal-title {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--ink);
+}
+.modal-close {
+  font-size: 20px;
+  color: var(--ink-faint);
+  padding: 4px 8px;
+}
+.modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+.modal-footer {
+  padding: 14px 20px;
+  border-top: 1px solid rgba(26,24,20,0.08);
+  display: flex;
+  gap: 10px;
+  background: var(--paper-soft);
+}
+
+/* ─── Toast ─── */
+.toast {
+  position: fixed;
+  bottom: 32px; left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--ink);
+  color: var(--paper);
+  padding: 12px 24px;
+  border-radius: var(--r-sm);
+  font-family: var(--font-serif);
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s;
+  z-index: 200;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.toast.success { background: var(--jade); }
+.toast.warn { background: var(--cinnabar); }
+
+/* ─── Footer ─── */
+.footer {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  text-align: center;
+  padding: 14px 24px;
+  background: linear-gradient(to top, var(--paper) 60%, transparent);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 11px;
+  color: var(--ink-faint);
+  letter-spacing: 0.1em;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* ─── 桌面端微调 ─── */
+@media (min-width: 600px) {
+  body { padding: 32px 0; }
+  .app {
+    border: 1px solid rgba(156,123,62,0.2);
+    border-radius: 4px;
+    box-shadow: 0 8px 60px rgba(26,24,20,0.12);
+    background: var(--paper);
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ─── Header ─── -->
+  <header class="header">
+    <div class="header-row">
+      <div class="title-block">
+        <h1 class="title-cn">雙姝集</h1>
+        <p class="title-en">Double Goddess · Prompt Atelier</p>
+      </div>
+      <div class="seal">雙姝<br>之印</div>
+    </div>
+    <p class="subtitle">新中式雙女主視覺生成工具</p>
+  </header>
+
+  <!-- ─── Tabs ─── -->
+  <nav class="tabs">
+    <button class="tab active" data-tab="generate">生 成</button>
+    <button class="tab" data-tab="library">場景庫</button>
+    <button class="tab" data-tab="export">導 出</button>
+  </nav>
+
+  <!-- ─── Panel: 生成 ─── -->
+  <section class="panel active" id="panel-generate">
+
+    <div class="form-section">
+      <h3 class="section-title">場景設定</h3>
+      <div class="field">
+        <label class="field-label">調用場景模板 <span class="en">Load preset</span></label>
+        <select class="field-select" id="preset">
+          <option value="">— 不調用,自己填 —</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="field-label">場景名稱 <span class="en">Scene name</span></label>
+        <input type="text" class="field-input" id="name" placeholder="自取一個名字">
+      </div>
+      <div class="field">
+        <label class="field-label">場景地點 <span class="en">Location</span></label>
+        <input type="text" class="field-input" id="location" placeholder="例:罗马花瓣池">
+      </div>
+      <div class="field">
+        <label class="field-label">時段 <span class="en">Time</span></label>
+        <select class="field-select" id="time_of_day">
+          <option>midnight party</option>
+          <option>moonlit night</option>
+          <option>candlelit night</option>
+          <option>rainy night</option>
+          <option>snowy moonlit night</option>
+          <option>soft daytime</option>
+          <option>golden-hour night</option>
+          <option>glittering night</option>
+          <option>rainy neon night</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3 class="section-title">背景與遠景</h3>
+      <div class="field">
+        <label class="field-label">主背景 <span class="en">Main background</span></label>
+        <textarea class="field-textarea" id="background_main" placeholder="例:满月窗外 / 罗马雕像"></textarea>
+      </div>
+      <div class="field">
+        <label class="field-label">遠景元素 <span class="en">Depth</span></label>
+        <textarea class="field-textarea" id="background_depth" placeholder="例:派对人群 / 摩天大楼"></textarea>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3 class="section-title">左側女主</h3>
+      <div class="field">
+        <label class="field-label">服裝 <span class="en">Outfit</span></label>
+        <textarea class="field-textarea" id="left_outfit" placeholder="例:粉色旗袍 + 长披帛"></textarea>
+      </div>
+      <div class="field">
+        <label class="field-label">色系 <span class="en">Color</span></label>
+        <input type="text" class="field-input" id="left_color" placeholder="例:blush pink">
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3 class="section-title">右側女主</h3>
+      <div class="field">
+        <label class="field-label">服裝 <span class="en">Outfit</span></label>
+        <textarea class="field-textarea" id="right_outfit" placeholder="例:薄荷绿旗袍"></textarea>
+      </div>
+      <div class="field">
+        <label class="field-label">色系 <span class="en">Color</span></label>
+        <input type="text" class="field-input" id="right_color" placeholder="例:teal green">
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3 class="section-title">共享元素</h3>
+      <div class="field">
+        <label class="field-label">耳機類型 <span class="en">Headphone</span></label>
+        <select class="field-select" id="headphone_type">
+          <option>over-ear champagne-gold headphones</option>
+          <option>on-ear white wired headphones</option>
+          <option>white wired in-ear earbuds</option>
+          <option>over-ear gold-finished headphones</option>
+          <option>minimalist white in-ear earbuds with thin cable</option>
+          <option>wireless white earbuds (no cable for clean look)</option>
+          <option>minimalist on-ear beige headphones</option>
+          <option>retro on-ear black-and-gold headphones</option>
+          <option>futuristic LED-edged over-ear headphones glowing cyan</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="field-label">髮飾 <span class="en">Hair ornaments</span></label>
+        <textarea class="field-textarea" id="hair_ornaments" placeholder="例:金色步摇 / 玉簪"></textarea>
+      </div>
+      <div class="field">
+        <label class="field-label">鞋款 <span class="en">Footwear</span></label>
+        <textarea class="field-textarea" id="footwear" placeholder="例:水钻凉鞋"></textarea>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3 class="section-title">前景與光影</h3>
+      <div class="field">
+        <label class="field-label">前景道具 <span class="en">Foreground props</span></label>
+        <textarea class="field-textarea" id="foreground_props" placeholder="例:香槟塔 / 玫瑰花瓣"></textarea>
+      </div>
+      <div class="field">
+        <label class="field-label">光線色調 <span class="en">Lighting</span></label>
+        <input type="text" class="field-input" id="lighting_palette" placeholder="例:warm gold with cool pool reflections">
+      </div>
+      <div class="field">
+        <label class="field-label">風格參考 <span class="en">Mood reference</span></label>
+        <input type="text" class="field-input" id="mood_reference" placeholder="例:Wong Kar-wai cinematography">
+      </div>
+      <div class="field">
+        <label class="field-label">額外負向詞 <span class="en">Extra negative (optional)</span></label>
+        <input type="text" class="field-input" id="extra_negative" placeholder="例:no readable text">
+      </div>
+    </div>
+
+    <!-- 实时预览 -->
+    <div class="preview">
+      <div class="preview-text" id="preview-text">填寫上方表單,預覽會自動更新…</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" id="btn-copy">複製 Prompt</button>
+      <button class="btn btn-accent" id="btn-save">存入場景庫</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" id="btn-clear">清空</button>
+      <button class="btn btn-outline" id="btn-toggle-mode">切換視頻模式</button>
+    </div>
+
+  </section>
+
+  <!-- ─── Panel: 场景库 ─── -->
+  <section class="panel" id="panel-library">
+    <div class="scene-toolbar">
+      <span class="count"><strong id="scene-count">0</strong> scenes</span>
+      <button class="btn btn-ghost" id="btn-reset" style="flex:0; padding: 8px 14px; font-size: 12px;">重置預置</button>
+    </div>
+    <button class="add-scene" id="btn-add">＋ 新增空白場景</button>
+    <div class="scene-list" id="scene-list"></div>
+  </section>
+
+  <!-- ─── Panel: 导出 ─── -->
+  <section class="panel" id="panel-export">
+    <div class="export-intro">
+      <div class="deco">— Export —</div>
+      <h2>批量導出</h2>
+      <p>把場景庫全部打包帶走</p>
+    </div>
+    <div class="export-options">
+      <button class="export-card" id="btn-export-txt">
+        <div class="export-icon">TXT</div>
+        <div class="export-info">
+          <div class="export-title">純文本(TXT)</div>
+          <div class="export-desc">每個場景一段,適合直接粘貼到即夢/可靈</div>
+        </div>
+        <div class="export-arrow">→</div>
+      </button>
+      <button class="export-card" id="btn-export-csv">
+        <div class="export-icon red">CSV</div>
+        <div class="export-info">
+          <div class="export-title">表格(CSV / Excel 可開)</div>
+          <div class="export-desc">每個場景一行,適合做內容排期表</div>
+        </div>
+        <div class="export-arrow">→</div>
+      </button>
+      <button class="export-card" id="btn-export-json">
+        <div class="export-icon gold">JSON</div>
+        <div class="export-info">
+          <div class="export-title">完整備份(JSON)</div>
+          <div class="export-desc">所有場景變量原始數據,可導入恢復</div>
+        </div>
+        <div class="export-arrow">→</div>
+      </button>
+      <label class="export-card" style="cursor: pointer;">
+        <input type="file" id="import-file" accept=".json" style="display:none">
+        <div class="export-icon" style="background: var(--jade);">JSON</div>
+        <div class="export-info">
+          <div class="export-title">導入備份</div>
+          <div class="export-desc">從 JSON 文件恢復場景庫</div>
+        </div>
+        <div class="export-arrow">←</div>
+      </label>
+    </div>
+  </section>
+
+</div>
+
+<div class="footer">— 紙短情長 · Crafted for visual storytellers —</div>
+
+<!-- Modal -->
+<div class="modal-mask" id="modal-mask">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">編輯場景</div>
+      <button class="modal-close" id="modal-close">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="modal-cancel">取消</button>
+      <button class="btn btn-primary" id="modal-save">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   雙姝集 · JS 主程序
+   ═══════════════════════════════════════════════ */
+
+const STORAGE_KEY = 'double_goddess_v1';
+const MODE_KEY = 'double_goddess_mode';
+
+// ─── 字段元数据(用于自动生成表单)─────────────
+const FIELDS = [
+  { id: 'name', label: '場景名稱', en: 'Name', type: 'text' },
+  { id: 'location', label: '場景地點', en: 'Location', type: 'text' },
+  { id: 'time_of_day', label: '時段', en: 'Time', type: 'text' },
+  { id: 'background_main', label: '主背景', en: 'Main BG', type: 'textarea' },
+  { id: 'background_depth', label: '遠景', en: 'Depth', type: 'textarea' },
+  { id: 'left_outfit', label: '左側服裝', en: 'Left outfit', type: 'textarea' },
+  { id: 'left_color', label: '左側色系', en: 'Left color', type: 'text' },
+  { id: 'right_outfit', label: '右側服裝', en: 'Right outfit', type: 'textarea' },
+  { id: 'right_color', label: '右側色系', en: 'Right color', type: 'text' },
+  { id: 'headphone_type', label: '耳機', en: 'Headphone', type: 'text' },
+  { id: 'hair_ornaments', label: '髮飾', en: 'Hair', type: 'textarea' },
+  { id: 'footwear', label: '鞋款', en: 'Footwear', type: 'textarea' },
+  { id: 'foreground_props', label: '前景道具', en: 'Props', type: 'textarea' },
+  { id: 'lighting_palette', label: '光線色調', en: 'Lighting', type: 'text' },
+  { id: 'mood_reference', label: '風格參考', en: 'Mood ref', type: 'text' },
+  { id: 'extra_negative', label: '額外負向詞', en: 'Negative', type: 'text' },
+];
+
+// ─── 预置 9 个场景 ─────────────
+const PRESET_SCENES = [
+  {
+    id: '01', name: 'baroque_salon_巴洛克沙龍',
+    location: 'opulent baroque hotel salon', time_of_day: 'golden-hour night',
+    background_main: 'massive crystal chandeliers cascading from ornate ceiling',
+    background_depth: 'gilded baroque console with vintage hi-fi speakers, velvet drapery',
+    left_outfit: 'sheer cream-gold gauze hanfu robe with gold floral embroidery, inner silk camisole',
+    left_color: 'cream-gold',
+    right_outfit: 'sheer blush-pink long robe with dense gold embroidery, pink bandeau with ribbon bow',
+    right_color: 'blush pink',
+    headphone_type: 'over-ear champagne-gold headphones',
+    hair_ornaments: 'twin side buns with golden filigree blossoms and pearl tassels',
+    footwear: 'nude red-sole pointed-toe pumps (left) and crystal strappy sandals (right)',
+    foreground_props: 'towering crystal champagne coupe pyramid (left), luxury shopping bags scattered, mirrored glass floor',
+    lighting_palette: 'warm golden chandelier glow with prismatic champagne sparkles',
+    mood_reference: 'Sofia Coppola Marie Antoinette × Tang dynasty fantasy',
+    extra_negative: 'no garbled brand logos'
+  },
+  {
+    id: '02', name: 'moonlit_pool_月夜泳池',
+    location: 'indoor luxury swimming pool in oriental palace spa', time_of_day: 'moonlit night',
+    background_main: 'enormous glowing full moon through arched Chinese lattice window',
+    background_depth: 'more lattice windows with amber lantern glow, wooden ceiling beams',
+    left_outfit: 'sheer ice-blue and cream gauze hanfu with silver embroidery, multiple translucent layers',
+    left_color: 'ice blue cream',
+    right_outfit: 'coral-pink strapless tube top with gold phoenix embroidery, matching wrap skirt with high slit',
+    right_color: 'coral pink',
+    headphone_type: 'on-ear white wired headphones',
+    hair_ornaments: 'high twin top-knots with golden hairpins and pearl-crystal tassels',
+    footwear: 'ultra-strappy crystal-embellished stiletto sandals with rhinestone ankle chains',
+    foreground_props: 'glass-and-gold bar cart with champagne in ice bucket, SPF 50 sunscreen bottle, scattered disco mirror balls',
+    lighting_palette: 'cool moonlight with warm tungsten lantern accents',
+    mood_reference: 'Wong Kar-wai cinematography',
+    extra_negative: 'no readable text on bottle label'
+  },
+  {
+    id: '03', name: 'roman_petal_pool_羅馬花瓣池',
+    location: 'grand outdoor neoclassical garden pool in Versailles-like palace', time_of_day: 'midnight party',
+    background_main: 'white Greco-Roman marble statues lining the pool edge',
+    background_depth: 'illuminated baroque palace facade with chandelier windows, distant blurred party guests in formal wear',
+    left_outfit: 'pink halter qipao mini-dress with floral embroidery, sheer pink shawl trailing behind',
+    left_color: 'blush pink',
+    right_outfit: 'teal-green halter qipao mini-dress with gold floral embroidery, long mint-teal sheer cape',
+    right_color: 'teal green',
+    headphone_type: 'white wired in-ear earbuds',
+    hair_ornaments: 'elegant updos with large golden floral hairpins, jade and pearl tassels',
+    footwear: 'identical nude platform peep-toe ankle-strap sandals with rhinestone clusters and red soles',
+    foreground_props: 'gold-foil champagne bottle, crystal coupe pyramid, hundreds of pink rose petals on water and marble floor',
+    lighting_palette: 'warm gold palace tungsten with cool turquoise pool reflections',
+    mood_reference: 'Baz Luhrmann The Great Gatsby × Tang dynasty fantasy',
+    extra_negative: 'no distorted crowd silhouettes'
+  },
+  {
+    id: '04', name: 'dunhuang_banquet_敦煌夜宴',
+    location: 'Mogao-cave-inspired chamber with flying-apsara frescoes', time_of_day: 'candlelit night',
+    background_main: 'faded apsara (飛天) frescoes in azurite, malachite, vermillion, gold leaf',
+    background_depth: 'arched cave ceiling with Buddhist murals, brass butter-lamp candles',
+    left_outfit: 'vermillion-red silk gauze Tang-style robe with gold lotus patterns and flowing ribbons',
+    left_color: 'vermillion red gold',
+    right_outfit: 'deep azurite-blue silk gauze robe with silver celestial patterns and gold forehead ornament',
+    right_color: 'azurite blue silver',
+    headphone_type: 'over-ear gold-finished headphones',
+    hair_ornaments: 'Tang-style headdresses with golden phoenix hairpins and lapis lazuli ornaments',
+    footwear: 'embroidered Tang silk court shoes with upturned toes',
+    foreground_props: 'low lacquered tea table with Tang tri-color ceramic wine cups, pipa leaning against wall, brass incense burner with smoke trails',
+    lighting_palette: 'warm amber butter-lamp glow with floating dust particles',
+    mood_reference: 'Zhang Yimou Hero × Mogao mural aesthetics',
+    extra_negative: 'no distorted fresco figures'
+  },
+  {
+    id: '05', name: 'jiangnan_rainy_teahouse_江南雨夜',
+    location: 'traditional Jiangnan waterside teahouse', time_of_day: 'rainy night',
+    background_main: 'open wooden lattice window overlooking rain-soaked canal',
+    background_depth: 'black-tile white-wall ancient houses across canal, paper lanterns glowing through rain, wooden boat',
+    left_outfit: 'minimalist ink-wash gray silk new-Chinese dress with subtle bamboo brushstroke embroidery',
+    left_color: 'ink gray',
+    right_outfit: 'misty celadon-green silk dress with faint plum-blossom embroidery',
+    right_color: 'celadon green',
+    headphone_type: 'minimalist white in-ear earbuds with thin cable',
+    hair_ornaments: 'simple low buns with single jade hairpins, restrained elegance',
+    footwear: 'embroidered traditional cloth slippers',
+    foreground_props: 'celadon porcelain teapot pouring steaming tea into two cups, open folding fan with ink painting',
+    lighting_palette: 'ink gray atmosphere with warm amber lantern glow and cool rain blue',
+    mood_reference: 'Hou Hsiao-hsien × Wong Kar-wai melancholic poetry',
+    extra_negative: 'no heavy rain spray'
+  },
+  {
+    id: '06', name: 'snow_onsen_雪夜溫泉',
+    location: 'open-air mountain ryokan-style hot spring', time_of_day: 'snowy moonlit night',
+    background_main: 'heavy snowfall over ancient red-blossom plum trees laden with snow',
+    background_depth: 'traditional wooden pavilion with curved tile roof under snow, stone lanterns along snowy path',
+    left_outfit: 'crimson-red silk inner robe with white fur trim, sheer white outer gauze with red plum embroidery',
+    left_color: 'crimson red white',
+    right_outfit: 'pure white silk inner robe with silver embroidery, ivory faux-fur stole, pale pink outer gauze',
+    right_color: 'white silver',
+    headphone_type: 'wireless white earbuds (no cable for clean look)',
+    hair_ornaments: 'elegant updos with red plum-blossom hairpins and pearl tassels, snow dusting hair',
+    footwear: 'bare feet with glistening porcelain skin (just emerged from water)',
+    foreground_props: 'wooden hot-spring tray floating on water with sake bottle and two cups, brass hand-warmer (手爐) beside each girl',
+    lighting_palette: 'cold moonlight with warm stone-lantern amber glow, backlit steam',
+    mood_reference: 'Ang Lee Crouching Tiger snowscape × onsen luxury',
+    extra_negative: 'no frozen skin'
+  },
+  {
+    id: '07', name: 'sakura_pavilion_櫻花茶室',
+    location: 'modern glass-walled tea pavilion suspended in sakura garden', time_of_day: 'soft daytime',
+    background_main: '360-degree floor-to-ceiling glass walls revealing sea of cherry blossoms',
+    background_depth: 'ancient cherry trees with mossy trunks, stone bridge over koi pond, distant misty mountains',
+    left_outfit: 'oat-beige raw linen wrap dress with hand-stitched cherry-blossom embroidery, asymmetric hem',
+    left_color: 'oat beige',
+    right_outfit: 'sakura-pink raw silk dress with negative-space ink-painting cherry-branch design',
+    right_color: 'sakura pink',
+    headphone_type: 'minimalist on-ear beige headphones',
+    hair_ornaments: 'messy low side buns with single fresh cherry-blossom branches tucked in',
+    footwear: 'bare feet on warm reclaimed wood platform',
+    foreground_props: 'matcha tea ceremony set with black raku-ware bowl and bamboo whisk, single ikebana cherry branch in celadon vase',
+    lighting_palette: 'soft diffused daylight filtered through cherry canopy with pink-tinted ambient glow',
+    mood_reference: 'Sofia Coppola Lost in Translation × Hayao Miyazaki dreamy nostalgia',
+    extra_negative: 'no harsh sunlight'
+  },
+  {
+    id: '08', name: 'bund_rooftop_外灘天台',
+    location: 'rooftop infinity-edge pool at luxury Bund hotel', time_of_day: 'glittering night',
+    background_main: 'entire Shanghai Pudong skyline lit with millions of LED lights, Oriental Pearl Tower visible',
+    background_depth: 'Huangpu River reflections, distant Art Deco rooftops of Bund buildings with tungsten glow',
+    left_outfit: 'champagne-gold velvet qipao with hand-beaded Art Deco geometric patterns, side slit, cap sleeves',
+    left_color: 'champagne gold',
+    right_outfit: 'emerald-green silk qipao with sequined peacock embroidery, mandarin collar with diamond clasp, side slit',
+    right_color: 'emerald green',
+    headphone_type: 'retro on-ear black-and-gold headphones',
+    hair_ornaments: 'glamorous 1930s finger waves fused with traditional Chinese hairpins, smoky-eye makeup with deep red lips',
+    footwear: 'vintage satin Mary-Jane high heels with rhinestone ankle straps and red soles',
+    foreground_props: 'vintage gold cigarette holder, crystal cocktail glass with amber liquid, pearl-handled folding fan',
+    lighting_palette: 'neon city glow with warm amber rooftop lanterns and infinity pool reflections',
+    mood_reference: 'Wong Kar-wai In the Mood for Love × Blade Runner Shanghai',
+    extra_negative: 'no garbled neon text'
+  },
+  {
+    id: '09', name: 'cyberpunk_temple_賽博神殿',
+    location: 'futuristic neo-Chinese cyberpunk temple hall', time_of_day: 'rainy neon night',
+    background_main: 'massive red-lacquered columns with golden dragons, projecting holographic cyan-magenta calligraphy',
+    background_depth: 'floating holographic koi fish swimming through air, giant LED moon-gate (月亮門) shifting colors',
+    left_outfit: 'metallic-silver hanfu robe with embedded fiber-optic threads glowing cyan, transparent vinyl outer layer',
+    left_color: 'metallic silver cyan-glow',
+    right_outfit: 'holographic-pink hanfu robe with chrome iridescent panels and magenta fiber-optic accents',
+    right_color: 'holographic pink magenta',
+    headphone_type: 'futuristic LED-edged over-ear headphones glowing cyan',
+    hair_ornaments: 'sleek high ponytails with chrome filigree hairpins and glowing LED tassels',
+    footwear: 'transparent acrylic platform boots with built-in LED soles glowing cyan and magenta',
+    foreground_props: 'floating holographic teacup with light-particle steam, drone-lanterns hovering, wet floor reflecting all neon',
+    lighting_palette: 'saturated neon cyan plus electric magenta with deep blacks',
+    mood_reference: 'Blade Runner 2049 × Wong Kar-wai × Tang dynasty techno-orientalism',
+    extra_negative: 'no garbled holographic text'
+  }
+];
+
+// ─── Prompt 模板 ─────────────
+function renderImagePrompt(s) {
+  const en = s.extra_negative ? ', ' + s.extra_negative : '';
+  return `Two identical young East Asian goddess sisters in their early twenties,
+porcelain fair skin, slender figures with long elegant legs, sitting
+side-by-side facing camera, legs gracefully crossed and extended forward,
+knees gently touching. Eyes softly closed, foreheads gently leaning
+against each other. Delicate makeup: peachy blush, glossy rose-red lips,
+long mascara lashes, mirrored symmetrical pose.
+
+Setting: ${s.location || '...'} at ${s.time_of_day || '...'}.
+Background: ${s.background_main || '...'} dominating the scene, with ${s.background_depth || '...'} adding depth.
+
+LEFT girl: wearing ${s.left_outfit || '...'} in ${s.left_color || '...'} palette.
+RIGHT girl: wearing ${s.right_outfit || '...'} in ${s.right_color || '...'} palette.
+
+Both wearing ${s.headphone_type || '...'} with a thin cable visibly looping between
+them in a soft U-curve. Elaborate Chinese hairstyles with ${s.hair_ornaments || '...'},
+cascading pearl-and-crystal tassel ornaments (步摇).
+
+Footwear: ${s.footwear || '...'}.
+Foreground props: ${s.foreground_props || '...'}.
+
+Lighting: ${s.lighting_palette || '...'}.
+Mood reference: ${s.mood_reference || '...'}.
+
+Hyper-realistic cinematic photography, 9:16 vertical aspect ratio,
+85mm lens, shallow depth of field f/2.0, film grain, Kodak Portra
+emulation, magazine editorial quality, ultra-detailed fabric texture,
+sharp focus on faces and hands.
+
+Negative: no warped hands, no extra fingers, no fused limbs, no distorted
+faces, no plastic skin, no broken cables, no garbled text, no modern logos,
+no phones, no cartoon stylization, no oversaturated neon${en}.`;
+}
+
+function renderVideoPrompt(s) {
+  const en = s.extra_negative ? ', ' + s.extra_negative : '';
+  return `[FIRST FRAME] Reference image attached.
+
+[CAMERA] Locked-off tripod with subtle slow push-in over 5 seconds.
+Shallow depth of field f/2.0, sharp focus on both faces, background bokeh.
+
+[SCENE CONTEXT]
+${s.location || '...'} at ${s.time_of_day || '...'}.
+LEFT girl in ${s.left_outfit || '...'} (${s.left_color || '...'}).
+RIGHT girl in ${s.right_outfit || '...'} (${s.right_color || '...'}).
+Both wearing ${s.headphone_type || '...'} with cable looping between them.
+
+[PRIMARY ACTION]
+One girl performs a single slow, tender action (suggested: adjust headphone,
+lift earphone cable, pour tea, catch a petal, apply sunscreen). The other
+girl shows a barely perceptible smile or head tilt around 3.0s.
+
+[ENVIRONMENTAL MOTION — 3 LAYERS]
+Layer 1 (continuous): subtle motion from ${s.foreground_props || 'props'}.
+Layer 2 (rhythmic):   lighting variation in ${s.lighting_palette || 'scene'}.
+Layer 3 (decorative): hair tassels and fabric edges gently swaying.
+
+[KEY MOMENT at 4.5s]
+A small visual highlight (a petal landing, a drop reflecting, a particle catching light).
+
+[TECHNICAL] 4K cinematic, 24fps with subtle motion blur, film grain,
+${s.mood_reference || '...'} cinematography style.
+
+[NEGATIVE] No facial morphing, no eye twitching, no finger deformation,
+no broken earphone cable, no extreme camera movement, no character
+identity drift, no clothing glitches${en}.`;
+}
+
+// ─── 状态管理 ─────────────
+let scenes = [];
+let currentMode = 'image'; // image | video
+let editingId = null;
+
+function loadScenes() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (raw) {
+    try { scenes = JSON.parse(raw); }
+    catch { scenes = [...PRESET_SCENES]; }
+  } else {
+    scenes = [...PRESET_SCENES];
+    saveScenes();
+  }
+  currentMode = localStorage.getItem(MODE_KEY) || 'image';
+}
+
+function saveScenes() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(scenes));
+}
+
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+}
+
+// ─── DOM 操作 ─────────────
+function $(s) { return document.querySelector(s); }
+function $$(s) { return document.querySelectorAll(s); }
+
+function getFormData() {
+  const d = {};
+  FIELDS.forEach(f => {
+    const el = $('#' + f.id);
+    if (el) d[f.id] = el.value.trim();
+  });
+  return d;
+}
+
+function setFormData(s) {
+  FIELDS.forEach(f => {
+    const el = $('#' + f.id);
+    if (el) el.value = s[f.id] || '';
+  });
+  updatePreview();
+}
+
+function clearForm() {
+  FIELDS.forEach(f => {
+    const el = $('#' + f.id);
+    if (el) el.value = '';
+  });
+  $('#preset').value = '';
+  updatePreview();
+}
+
+function updatePreview() {
+  const data = getFormData();
+  const prompt = currentMode === 'image' ? renderImagePrompt(data) : renderVideoPrompt(data);
+  $('#preview-text').textContent = prompt;
+}
+
+function updateModeButton() {
+  $('#btn-toggle-mode').textContent = currentMode === 'image' ? '切換視頻模式' : '切換圖片模式';
+  updatePreview();
+}
+
+// ─── Toast ─────────────
+function toast(msg, type='') {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+// ─── 复制到剪贴板 ─────────────
+async function copyToClipboard(text) {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+    toast('✓ 已複製,粘貼到生成工具即可', 'success');
+  } catch (e) {
+    toast('複製失敗,請手動長按選擇', 'warn');
+  }
+}
+
+// ─── 渲染场景库 ─────────────
+function renderLibrary() {
+  $('#scene-count').textContent = scenes.length;
+  const list = $('#scene-list');
+  list.innerHTML = '';
+  if (scenes.length === 0) {
+    list.innerHTML = '<div style="text-align:center; color:var(--ink-faint); padding:40px 0; font-style:italic;">場景庫空空如也<br>點擊上方新增一個吧</div>';
+    return;
+  }
+  scenes.forEach((s, idx) => {
+    const card = document.createElement('div');
+    card.className = 'scene-card';
+    const warmTags = ['cream-gold', 'blush pink', 'vermillion red gold', 'crimson red white', 'champagne gold', 'sakura pink', 'oat beige', 'holographic pink magenta'];
+    const isWarm = warmTags.some(t => (s.left_color || '').includes(t) || (s.right_color || '').includes(t));
+    const cls = isWarm ? 'warm' : 'cool';
+    card.innerHTML = `
+      <div class="scene-card-header">
+        <div class="scene-idx">${String(idx+1).padStart(2,'0')}</div>
+        <div style="flex:1;">
+          <div class="scene-name">${escapeHtml(s.name || '未命名')}</div>
+          <span class="scene-name-en">${escapeHtml((s.location || '').slice(0, 50))}</span>
+        </div>
+      </div>
+      <div class="scene-meta">
+        ${s.time_of_day ? `<span class="tag">${escapeHtml(s.time_of_day)}</span>` : ''}
+        ${s.left_color ? `<span class="tag ${cls}">L · ${escapeHtml(s.left_color)}</span>` : ''}
+        ${s.right_color ? `<span class="tag ${cls}">R · ${escapeHtml(s.right_color)}</span>` : ''}
+      </div>
+      <div class="scene-actions">
+        <button class="btn btn-primary" data-action="use" data-idx="${idx}">調用</button>
+        <button class="btn btn-outline" data-action="edit" data-idx="${idx}">編輯</button>
+        <button class="btn btn-ghost" data-action="copy" data-idx="${idx}">複製</button>
+        <button class="btn btn-ghost" data-action="del" data-idx="${idx}" style="flex:0; padding:9px 12px;">✕</button>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+  rebuildPresetDropdown();
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function rebuildPresetDropdown() {
+  const sel = $('#preset');
+  sel.innerHTML = '<option value="">— 不調用,自己填 —</option>';
+  scenes.forEach((s, idx) => {
+    const opt = document.createElement('option');
+    opt.value = idx;
+    opt.textContent = `${String(idx+1).padStart(2,'0')} · ${s.name || '未命名'}`;
+    sel.appendChild(opt);
+  });
+}
+
+// ─── Modal 编辑 ─────────────
+function openEditModal(idx) {
+  editingId = idx;
+  const s = idx === -1 ? {} : scenes[idx];
+  $('#modal-title').textContent = idx === -1 ? '新增場景' : '編輯場景';
+  const body = $('#modal-body');
+  body.innerHTML = FIELDS.map(f => `
+    <div class="field">
+      <label class="field-label">${f.label} <span class="en">${f.en}</span></label>
+      ${f.type === 'textarea'
+        ? `<textarea class="field-textarea" data-field="${f.id}">${escapeHtml(s[f.id] || '')}</textarea>`
+        : `<input type="text" class="field-input" data-field="${f.id}" value="${escapeHtml(s[f.id] || '')}">`}
+    </div>
+  `).join('');
+  $('#modal-mask').classList.add('show');
+}
+
+function closeModal() {
+  $('#modal-mask').classList.remove('show');
+  editingId = null;
+}
+
+function saveModal() {
+  const inputs = $$('#modal-body [data-field]');
+  const data = {};
+  inputs.forEach(el => data[el.dataset.field] = el.value.trim());
+  if (!data.name) { toast('請填寫場景名稱', 'warn'); return; }
+  if (editingId === -1) {
+    scenes.push(data);
+  } else {
+    scenes[editingId] = { ...scenes[editingId], ...data };
+  }
+  saveScenes();
+  renderLibrary();
+  closeModal();
+  toast('✓ 已保存', 'success');
+}
+
+// ─── 导出 ─────────────
+function download(filename, content, mime='text/plain') {
+  const blob = new Blob(['\ufeff' + content], { type: mime + ';charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function exportTxt() {
+  if (scenes.length === 0) { toast('場景庫是空的', 'warn'); return; }
+  const sections = scenes.map((s, i) => {
+    const head = `═══════════════════════════════════════════════
+場景 ${String(i+1).padStart(2,'0')} · ${s.name || '未命名'}
+═══════════════════════════════════════════════
+
+【圖片 Prompt】
+${renderImagePrompt(s)}
+
+【視頻 Prompt】
+${renderVideoPrompt(s)}
+`;
+    return head;
+  }).join('\n\n');
+  download(`double_goddess_${stamp()}.txt`, sections);
+  toast('✓ TXT 已下載', 'success');
+}
+
+function exportCsv() {
+  if (scenes.length === 0) { toast('場景庫是空的', 'warn'); return; }
+  const header = ['編號', '名稱', '地點', '時段', '左服裝', '左色系', '右服裝', '右色系', '耳機', '光線', '風格', '圖片Prompt', '視頻Prompt'];
+  const rows = scenes.map((s, i) => [
+    String(i+1).padStart(2,'0'),
+    s.name, s.location, s.time_of_day,
+    s.left_outfit, s.left_color, s.right_outfit, s.right_color,
+    s.headphone_type, s.lighting_palette, s.mood_reference,
+    renderImagePrompt(s).replace(/\n/g, ' '),
+    renderVideoPrompt(s).replace(/\n/g, ' ')
+  ]);
+  const csv = [header, ...rows].map(r =>
+    r.map(c => `"${String(c||'').replace(/"/g, '""')}"`).join(',')
+  ).join('\r\n');
+  download(`double_goddess_${stamp()}.csv`, csv, 'text/csv');
+  toast('✓ CSV 已下載', 'success');
+}
+
+function exportJson() {
+  if (scenes.length === 0) { toast('場景庫是空的', 'warn'); return; }
+  download(`double_goddess_${stamp()}.json`, JSON.stringify(scenes, null, 2), 'application/json');
+  toast('✓ JSON 已下載', 'success');
+}
+
+function importJson(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!Array.isArray(data)) throw new Error('format');
+      if (confirm(`即將導入 ${data.length} 個場景,會替換當前場景庫。確認嗎?`)) {
+        scenes = data;
+        saveScenes();
+        renderLibrary();
+        toast('✓ 導入成功', 'success');
+      }
+    } catch {
+      toast('文件格式錯誤', 'warn');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function stamp() {
+  const d = new Date();
+  return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+// ─── 事件绑定 ─────────────
+function bindEvents() {
+  // Tabs
+  $$('.tab').forEach(t => {
+    t.addEventListener('click', () => {
+      $$('.tab').forEach(x => x.classList.remove('active'));
+      $$('.panel').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      $('#panel-' + t.dataset.tab).classList.add('active');
+      if (t.dataset.tab === 'library') renderLibrary();
+    });
+  });
+
+  // Form inputs
+  FIELDS.forEach(f => {
+    const el = $('#' + f.id);
+    if (el) el.addEventListener('input', updatePreview);
+  });
+
+  // Preset dropdown
+  $('#preset').addEventListener('change', e => {
+    const idx = e.target.value;
+    if (idx === '') return;
+    setFormData(scenes[idx]);
+  });
+
+  // Buttons
+  $('#btn-copy').addEventListener('click', () => {
+    copyToClipboard($('#preview-text').textContent);
+  });
+  $('#btn-save').addEventListener('click', () => {
+    const data = getFormData();
+    if (!data.name) { toast('請先填寫場景名稱', 'warn'); return; }
+    scenes.push(data);
+    saveScenes();
+    renderLibrary();
+    toast('✓ 已存入場景庫', 'success');
+  });
+  $('#btn-clear').addEventListener('click', clearForm);
+  $('#btn-toggle-mode').addEventListener('click', () => {
+    currentMode = currentMode === 'image' ? 'video' : 'image';
+    localStorage.setItem(MODE_KEY, currentMode);
+    updateModeButton();
+  });
+
+  // Library
+  $('#btn-add').addEventListener('click', () => openEditModal(-1));
+  $('#btn-reset').addEventListener('click', () => {
+    if (confirm('將恢復為預置的 9 個場景,當前自定義的場景會被覆蓋。確認嗎?')) {
+      scenes = JSON.parse(JSON.stringify(PRESET_SCENES));
+      saveScenes();
+      renderLibrary();
+      toast('✓ 已重置為預置場景', 'success');
+    }
+  });
+  $('#scene-list').addEventListener('click', e => {
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+    const idx = +btn.dataset.idx;
+    const act = btn.dataset.action;
+    if (act === 'use') {
+      setFormData(scenes[idx]);
+      $$('.tab').forEach(x => x.classList.remove('active'));
+      $$('.panel').forEach(x => x.classList.remove('active'));
+      document.querySelector('[data-tab="generate"]').classList.add('active');
+      $('#panel-generate').classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      toast('✓ 已調入表單', 'success');
+    } else if (act === 'edit') {
+      openEditModal(idx);
+    } else if (act === 'copy') {
+      const prompt = currentMode === 'image' ? renderImagePrompt(scenes[idx]) : renderVideoPrompt(scenes[idx]);
+      copyToClipboard(prompt);
+    } else if (act === 'del') {
+      if (confirm(`刪除「${scenes[idx].name}」?`)) {
+        scenes.splice(idx, 1);
+        saveScenes();
+        renderLibrary();
+        toast('已刪除', '');
+      }
+    }
+  });
+
+  // Modal
+  $('#modal-close').addEventListener('click', closeModal);
+  $('#modal-cancel').addEventListener('click', closeModal);
+  $('#modal-save').addEventListener('click', saveModal);
+  $('#modal-mask').addEventListener('click', e => {
+    if (e.target === $('#modal-mask')) closeModal();
+  });
+
+  // Export
+  $('#btn-export-txt').addEventListener('click', exportTxt);
+  $('#btn-export-csv').addEventListener('click', exportCsv);
+  $('#btn-export-json').addEventListener('click', exportJson);
+  $('#import-file').addEventListener('change', e => {
+    if (e.target.files[0]) importJson(e.target.files[0]);
+    e.target.value = '';
+  });
+}
+
+// ─── 启动 ─────────────
+loadScenes();
+bindEvents();
+rebuildPresetDropdown();
+updateModeButton();
+updatePreview();
+renderLibrary();
+</script>
+
+</body>
+</html>
