@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#3056ff">
+<title>启航志愿 · 四川省2026年高考志愿填报辅助系统</title>
+<style>
+/* ════════════════════════════════════════════
+   启航志愿 · 设计系统
+   ════════════════════════════════════════════ */
+:root{
+  --bg:#f4f6fb;
+  --bg-soft:#eef1f8;
+  --card:#ffffff;
+  --card-soft:#f8f9fd;
+  --line:#e6e9f2;
+  --text:#1b2030;
+  --text-2:#5a6275;
+  --text-3:#9aa1b5;
+  --brand:#3056ff;
+  --brand-2:#7c3aed;
+  --brand-grad:linear-gradient(135deg,#3056ff 0%,#7c3aed 100%);
+  --green:#10a667;
+  --orange:#f08c00;
+  --red:#e23d3d;
+  --gold:#b8860b;
+  --shadow:0 2px 10px rgba(27,32,48,.05);
+  --shadow-lg:0 12px 40px rgba(27,32,48,.12);
+  --r:14px;
+  --r-lg:20px;
+  --nav-h:60px;
+}
+[data-theme="dark"]{
+  --bg:#0e1118;
+  --bg-soft:#131724;
+  --card:#181d2b;
+  --card-soft:#1e2435;
+  --line:#272e42;
+  --text:#e8ebf4;
+  --text-2:#a7aec2;
+  --text-3:#6b7390;
+  --shadow:0 2px 10px rgba(0,0,0,.3);
+  --shadow-lg:0 12px 40px rgba(0,0,0,.5);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+  background:var(--bg);color:var(--text);font-size:15px;line-height:1.65;
+  -webkit-font-smoothing:antialiased;min-height:100vh;
+}
+button,input,select{font-family:inherit;font-size:inherit;color:inherit;border:none;background:none;outline:none}
+button{cursor:pointer}
+::placeholder{color:var(--text-3)}
+
+/* ─── 顶部导航 ─── */
+.nav{
+  position:sticky;top:0;z-index:100;height:var(--nav-h);
+  background:color-mix(in srgb,var(--card) 82%,transparent);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:8px;padding:0 16px;
+}
+.nav-logo{display:flex;align-items:center;gap:9px;margin-right:10px;flex-shrink:0}
+.nav-logo .mark{
+  width:34px;height:34px;border-radius:10px;background:var(--brand-grad);
+  display:grid;place-items:center;color:#fff;font-weight:800;font-size:17px;
+  box-shadow:0 4px 12px rgba(48,86,255,.35);
+}
+.nav-logo .name{font-weight:800;font-size:16.5px;letter-spacing:.02em}
+.nav-logo .name small{display:block;font-size:10.5px;font-weight:400;color:var(--text-3);letter-spacing:.06em;line-height:1.2}
+.nav-tabs{display:flex;gap:2px;flex:1;overflow-x:auto;scrollbar-width:none}
+.nav-tabs::-webkit-scrollbar{display:none}
+.nav-tab{
+  padding:8px 14px;border-radius:10px;font-size:14px;color:var(--text-2);
+  white-space:nowrap;font-weight:500;transition:.18s;position:relative;
+}
+.nav-tab:hover{color:var(--text);background:var(--bg-soft)}
+.nav-tab.on{color:var(--brand);background:color-mix(in srgb,var(--brand) 10%,transparent);font-weight:700}
+.nav-tab .badge{
+  position:absolute;top:2px;right:2px;min-width:16px;height:16px;padding:0 4px;
+  background:var(--red);color:#fff;border-radius:8px;font-size:10px;font-weight:700;
+  display:grid;place-items:center;line-height:1;
+}
+.theme-btn{
+  width:36px;height:36px;border-radius:10px;display:grid;place-items:center;
+  color:var(--text-2);border:1px solid var(--line);flex-shrink:0;transition:.18s;
+}
+.theme-btn:hover{color:var(--brand);border-color:var(--brand)}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+.page{display:none;padding:24px 0 80px;animation:fadeUp .3s ease}
+.page.on{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ─── Hero ─── */
+.hero{
+  position:relative;border-radius:var(--r-lg);overflow:hidden;
+  background:var(--brand-grad);color:#fff;
+  padding:42px 36px 38px;margin-bottom:22px;
+  box-shadow:0 16px 48px rgba(48,86,255,.28);
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 85% 15%,rgba(255,255,255,.22),transparent 42%),
+    radial-gradient(circle at 8% 90%,rgba(255,255,255,.12),transparent 38%);
+}
+.hero>*{position:relative}
+.hero h1{font-size:30px;font-weight:800;letter-spacing:.03em;line-height:1.3}
+.hero p{opacity:.88;margin-top:8px;max-width:560px;font-size:14.5px}
+.hero-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.hero-tag{
+  font-size:12.5px;padding:5px 12px;border-radius:99px;
+  background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);
+  backdrop-filter:blur(4px);
+}
+
+/* ─── 表单卡 ─── */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow)}
+.score-form{padding:26px 28px;margin-top:-58px;position:relative;z-index:2}
+.sf-title{font-size:16px;font-weight:800;display:flex;align-items:center;gap:8px;margin-bottom:18px}
+.sf-title::before{content:'';width:4px;height:18px;border-radius:2px;background:var(--brand-grad)}
+.sf-grid{display:grid;grid-template-columns:auto 1fr 1fr auto;gap:14px;align-items:end}
+.field label{display:block;font-size:12.5px;color:var(--text-2);margin-bottom:7px;font-weight:600}
+.seg{display:flex;background:var(--bg-soft);border-radius:11px;padding:4px;gap:4px}
+.seg button{
+  padding:9px 20px;border-radius:8px;font-size:14px;font-weight:600;color:var(--text-2);transition:.18s;
+}
+.seg button.on{background:var(--card);color:var(--brand);box-shadow:var(--shadow);font-weight:700}
+.inp{
+  width:100%;padding:11px 14px;border-radius:11px;border:1.5px solid var(--line);
+  background:var(--card);font-size:15px;transition:.18s;
+}
+.inp:focus{border-color:var(--brand);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 14%,transparent)}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  padding:11px 24px;border-radius:11px;font-size:15px;font-weight:700;transition:.18s;
+  background:var(--brand-grad);color:#fff;box-shadow:0 6px 18px rgba(48,86,255,.32);
+}
+.btn:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(48,86,255,.42)}
+.btn:active{transform:none}
+.btn-ghost{
+  background:var(--card);color:var(--text-2);border:1px solid var(--line);box-shadow:none;
+  padding:9px 16px;font-size:13.5px;font-weight:600;border-radius:10px;
+}
+.btn-ghost:hover{color:var(--brand);border-color:var(--brand);box-shadow:none;transform:none}
+.btn-sm{padding:7px 14px;font-size:13px;border-radius:9px;box-shadow:none}
+
+/* ─── 批线卡片 ─── */
+.lines-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-top:22px}
+.line-card{padding:18px 20px;border-radius:var(--r);background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
+.line-card .k{font-size:12.5px;color:var(--text-3);font-weight:600}
+.line-card .v{font-size:27px;font-weight:800;margin-top:2px;background:var(--brand-grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.line-card .s{font-size:12px;color:var(--text-3)}
+
+/* ─── 用户位次概览 ─── */
+.me-bar{
+  display:flex;flex-wrap:wrap;gap:26px;align-items:center;
+  padding:18px 26px;margin-top:22px;border-radius:var(--r-lg);
+  background:linear-gradient(135deg,color-mix(in srgb,var(--brand) 8%,var(--card)),color-mix(in srgb,var(--brand-2) 8%,var(--card)));
+  border:1px solid color-mix(in srgb,var(--brand) 22%,var(--line));
+}
+.me-item .k{font-size:12px;color:var(--text-3);font-weight:600}
+.me-item .v{font-size:21px;font-weight:800}
+.me-item .v em{font-style:normal;font-size:13px;color:var(--text-2);font-weight:500;margin-left:3px}
+
+/* ─── 推荐结果 ─── */
+.rec-tabs{display:flex;gap:10px;margin:26px 0 16px}
+.rec-tab{
+  flex:1;padding:14px 18px;border-radius:var(--r);border:1.5px solid var(--line);
+  background:var(--card);text-align:left;transition:.18s;
+}
+.rec-tab .t{font-size:16px;font-weight:800;display:flex;align-items:center;gap:8px}
+.rec-tab .d{font-size:12px;color:var(--text-3);margin-top:2px}
+.rec-tab .n{font-size:12px;font-weight:700;padding:1px 8px;border-radius:99px;color:#fff}
+.rec-tab.chong .n{background:var(--red)}.rec-tab.wen .n{background:var(--orange)}.rec-tab.bao .n{background:var(--green)}
+.rec-tab.on{border-color:var(--brand);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 12%,transparent)}
+
+/* ─── 院校卡片 ─── */
+.school-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px}
+.sc{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:18px 18px 14px;box-shadow:var(--shadow);transition:.2s;position:relative;
+  display:flex;flex-direction:column;gap:10px;
+}
+.sc:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:color-mix(in srgb,var(--brand) 35%,var(--line))}
+.sc-head{display:flex;gap:12px;align-items:flex-start}
+.sc-avatar{
+  width:44px;height:44px;border-radius:12px;flex-shrink:0;
+  display:grid;place-items:center;font-weight:800;font-size:17px;color:#fff;
+}
+.sc-name{font-size:16px;font-weight:800;line-height:1.35;cursor:pointer}
+.sc-name:hover{color:var(--brand)}
+.sc-meta{font-size:12.5px;color:var(--text-3);margin-top:1px}
+.sc-tags{display:flex;flex-wrap:wrap;gap:5px}
+.tag{font-size:11px;padding:2px 8px;border-radius:6px;font-weight:700;letter-spacing:.02em}
+.tag-985{background:#fdeaea;color:#c0262d}
+.tag-211{background:#fff3e0;color:#b25e00}
+.tag-sy{background:#e8f0fe;color:#2950d8}
+.tag-gb{background:#e6f6ee;color:#0c7d4d}
+.tag-mb{background:#f3e8ff;color:#7c3aed}
+.tag-norm{background:var(--bg-soft);color:var(--text-2)}
+[data-theme="dark"] .tag-985{background:#3d1d1f;color:#ff9b9b}
+[data-theme="dark"] .tag-211{background:#3a2a14;color:#ffc46b}
+[data-theme="dark"] .tag-sy{background:#1c2a4d;color:#8fadff}
+[data-theme="dark"] .tag-gb{background:#143226;color:#5fd6a2}
+[data-theme="dark"] .tag-mb{background:#2d1d45;color:#c7a4ff}
+.sc-scores{display:flex;gap:0;border-top:1px dashed var(--line);padding-top:10px}
+.sc-score{flex:1}
+.sc-score .k{font-size:11px;color:var(--text-3)}
+.sc-score .v{font-size:17px;font-weight:800}
+.sc-score .v small{font-size:11px;color:var(--text-3);font-weight:500}
+.prob-wrap{margin-top:2px}
+.prob-row{display:flex;justify-content:space-between;font-size:12px;color:var(--text-2);margin-bottom:4px}
+.prob-row b{font-size:13px}
+.prob-bar{height:7px;border-radius:4px;background:var(--bg-soft);overflow:hidden}
+.prob-bar i{display:block;height:100%;border-radius:4px;transition:width .5s ease}
+.sc-actions{display:flex;gap:8px;margin-top:2px}
+.sc-actions .btn-ghost{flex:1;justify-content:center;display:inline-flex;align-items:center;gap:5px}
+.fav-btn{position:absolute;top:14px;right:14px;font-size:19px;color:var(--text-3);transition:.15s;line-height:1}
+.fav-btn.on{color:#f5a623}
+.cmp-check{position:absolute;top:40px;right:11px;display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text-3);cursor:pointer;user-select:none}
+.cmp-check input{accent-color:var(--brand);cursor:pointer}
+
+/* ─── 筛选条 ─── */
+.filter-bar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;align-items:center}
+.filter-bar .inp{width:auto;flex:1;min-width:200px}
+.sel{
+  padding:10px 32px 10px 13px;border-radius:11px;border:1.5px solid var(--line);
+  background:var(--card) url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239aa1b5' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 12px center;
+  appearance:none;cursor:pointer;font-size:14px;
+}
+.sel:focus{border-color:var(--brand)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.chip{
+  padding:6px 15px;border-radius:99px;font-size:13px;font-weight:600;
+  background:var(--card);border:1.5px solid var(--line);color:var(--text-2);transition:.15s;
+}
+.chip:hover{border-color:var(--brand);color:var(--brand)}
+.chip.on{background:var(--brand-grad);color:#fff;border-color:transparent;box-shadow:0 4px 12px rgba(48,86,255,.3)}
+.count-hint{font-size:13px;color:var(--text-3);margin-bottom:12px}
+
+/* ─── 表格 ─── */
+.table-card{overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{
+  text-align:left;padding:12px 16px;font-size:12.5px;color:var(--text-3);font-weight:700;
+  background:var(--card-soft);border-bottom:1px solid var(--line);white-space:nowrap;
+}
+td{padding:11px 16px;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:none}
+tbody tr{transition:.12s}
+tbody tr:hover{background:var(--card-soft)}
+.tr-hl{background:color-mix(in srgb,var(--brand) 9%,transparent)!important}
+.num{font-variant-numeric:tabular-nums;font-weight:600}
+
+/* ─── 换算器 ─── */
+.conv-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+.conv-card{padding:22px 24px}
+.conv-card h3{font-size:15px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.conv-card h3::before{content:'';width:4px;height:16px;border-radius:2px;background:var(--brand-grad)}
+.conv-out{
+  margin-top:14px;padding:14px 16px;border-radius:12px;
+  background:color-mix(in srgb,var(--brand) 7%,var(--card-soft));
+  border:1px dashed color-mix(in srgb,var(--brand) 30%,var(--line));
+  font-size:14px;color:var(--text-2);min-height:52px;
+}
+.conv-out b{color:var(--brand);font-size:19px}
+
+/* ─── 专业卡片 ─── */
+.major-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.mj{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:18px;box-shadow:var(--shadow);transition:.2s;
+}
+.mj:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.mj-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.mj h4{font-size:15.5px;font-weight:800}
+.mj .cat{font-size:11px;padding:2px 9px;border-radius:6px;background:color-mix(in srgb,var(--brand) 10%,transparent);color:var(--brand);font-weight:700;white-space:nowrap}
+.mj .meta{font-size:12px;color:var(--text-3);margin-top:3px}
+.mj .desc{font-size:13px;color:var(--text-2);margin-top:9px;line-height:1.6}
+.mj .jobs{font-size:12.5px;color:var(--text-3);margin-top:9px;padding-top:9px;border-top:1px dashed var(--line)}
+.mj .jobs b{color:var(--text-2);font-weight:600}
+.mj .salary{margin-top:6px;font-size:12.5px}
+.mj .salary b{color:var(--orange);font-weight:800}
+
+/* ─── 志愿表 ─── */
+.zy-head{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:16px}
+.zy-head h2{font-size:20px;font-weight:800}
+.zy-head .sub{font-size:13px;color:var(--text-3)}
+.zy-actions{display:flex;gap:8px;flex-wrap:wrap}
+.zy-item{
+  display:flex;gap:14px;align-items:center;background:var(--card);
+  border:1px solid var(--line);border-radius:var(--r);padding:14px 18px;
+  margin-bottom:10px;box-shadow:var(--shadow);transition:.15s;
+}
+.zy-item:hover{border-color:color-mix(in srgb,var(--brand) 35%,var(--line))}
+.zy-no{
+  width:38px;height:38px;border-radius:11px;background:var(--brand-grad);color:#fff;
+  display:grid;place-items:center;font-weight:800;font-size:15px;flex-shrink:0;
+}
+.zy-info{flex:1;min-width:0}
+.zy-info .n{font-weight:800;font-size:15px}
+.zy-info .m{font-size:12.5px;color:var(--text-3);margin-top:1px}
+.zy-prob{font-size:12px;text-align:right;flex-shrink:0;min-width:72px}
+.zy-prob b{font-size:16px;display:block}
+.zy-ctrl{display:flex;gap:5px;flex-shrink:0}
+.icon-btn{
+  width:30px;height:30px;border-radius:8px;display:grid;place-items:center;
+  border:1px solid var(--line);color:var(--text-2);font-size:13px;transition:.15s;
+}
+.icon-btn:hover{color:var(--brand);border-color:var(--brand)}
+.icon-btn.danger:hover{color:var(--red);border-color:var(--red)}
+.empty{
+  text-align:center;padding:64px 20px;color:var(--text-3);
+  background:var(--card);border:1.5px dashed var(--line);border-radius:var(--r-lg);
+}
+.empty .big{font-size:44px;margin-bottom:10px}
+.empty p{font-size:14px}
+
+/* ─── 弹窗 ─── */
+.modal-mask{
+  position:fixed;inset:0;z-index:200;background:rgba(15,18,28,.55);
+  backdrop-filter:blur(5px);display:none;align-items:flex-start;justify-content:center;
+  padding:40px 16px;overflow-y:auto;
+}
+.modal-mask.on{display:flex;animation:fadeIn .2s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{
+  width:100%;max-width:680px;background:var(--card);border-radius:var(--r-lg);
+  box-shadow:var(--shadow-lg);animation:popIn .25s ease;overflow:hidden;
+}
+@keyframes popIn{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
+.modal-lg{max-width:920px}
+.modal-head{
+  padding:20px 26px 0;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;
+}
+.modal-body{padding:18px 26px 26px}
+.modal-close{
+  width:32px;height:32px;border-radius:9px;display:grid;place-items:center;
+  color:var(--text-3);font-size:17px;flex-shrink:0;border:1px solid var(--line);
+}
+.modal-close:hover{color:var(--red);border-color:var(--red)}
+.detail-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin:16px 0}
+.ds{background:var(--card-soft);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.ds .k{font-size:11.5px;color:var(--text-3)}
+.ds .v{font-size:18px;font-weight:800;margin-top:1px}
+.ds .v small{font-size:11px;font-weight:500;color:var(--text-3)}
+.sect-t{font-size:14px;font-weight:800;margin:18px 0 10px;display:flex;align-items:center;gap:7px}
+.sect-t::before{content:'';width:3.5px;height:14px;border-radius:2px;background:var(--brand-grad)}
+.chart-box{background:var(--card-soft);border:1px solid var(--line);border-radius:12px;padding:14px}
+.mj-pills{display:flex;flex-wrap:wrap;gap:8px}
+.mj-pill{
+  font-size:13px;padding:6px 14px;border-radius:99px;background:var(--card-soft);
+  border:1px solid var(--line);color:var(--text-2);transition:.15s;
+}
+.mj-pill:hover{border-color:var(--brand);color:var(--brand)}
+.mj-pill.on{background:var(--brand-grad);color:#fff;border-color:transparent}
+
+/* ─── 对比栏 ─── */
+.cmp-bar{
+  position:fixed;left:50%;bottom:18px;transform:translateX(-50%) translateY(90px);z-index:150;
+  display:flex;align-items:center;gap:14px;padding:12px 20px;
+  background:var(--card);border:1px solid var(--line);border-radius:99px;
+  box-shadow:var(--shadow-lg);transition:.3s;opacity:0;
+}
+.cmp-bar.on{transform:translateX(-50%);opacity:1}
+.cmp-bar .names{font-size:13.5px;font-weight:600;max-width:380px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cmp-table-wrap{overflow-x:auto}
+.cmp-table-wrap th:first-child{position:sticky;left:0;background:var(--card-soft);z-index:1}
+.cmp-table-wrap td:first-child{position:sticky;left:0;background:var(--card);font-weight:700;font-size:12.5px;color:var(--text-3);white-space:nowrap;z-index:1}
+
+/* ─── Toast ─── */
+.toast-box{position:fixed;top:74px;left:50%;transform:translateX(-50%);z-index:300;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+.toast{
+  padding:11px 22px;border-radius:99px;background:var(--text);color:var(--bg);
+  font-size:14px;font-weight:600;box-shadow:var(--shadow-lg);
+  animation:toastIn .25s ease;white-space:nowrap;
+}
+@keyframes toastIn{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
+
+/* ─── 页脚 ─── */
+.footer{
+  border-top:1px solid var(--line);padding:26px 16px 34px;text-align:center;
+  font-size:12.5px;color:var(--text-3);line-height:1.9;
+}
+.footer b{color:var(--orange)}
+
+/* ─── 响应式 ─── */
+@media (max-width:860px){
+  .sf-grid{grid-template-columns:1fr 1fr}
+  .sf-grid .field-track,.sf-grid .field-btn{grid-column:1/-1}
+  .sf-grid .btn{width:100%}
+  .conv-grid{grid-template-columns:1fr}
+  .hero{padding:30px 22px 56px}
+  .hero h1{font-size:23px}
+  .rec-tabs{flex-direction:column}
+  .nav-logo .name small{display:none}
+}
+@media print{
+  .nav,.zy-actions,.zy-ctrl,.footer,.cmp-bar,.toast-box{display:none!important}
+  body{background:#fff}
+  .page{display:none!important}
+  #page-list{display:block!important}
+  .zy-item{break-inside:avoid;box-shadow:none}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">
+    <div class="mark">启</div>
+    <div class="name">启航志愿<small>四川省2026年高考志愿填报辅助系统</small></div>
+  </div>
+  <div class="nav-tabs" id="navTabs">
+    <button class="nav-tab on" data-page="home">智能推荐</button>
+    <button class="nav-tab" data-page="rank">一分一段</button>
+    <button class="nav-tab" data-page="schools">院校库</button>
+    <button class="nav-tab" data-page="majors">专业库</button>
+    <button class="nav-tab" data-page="fav">我的收藏 <span class="badge" id="favBadge" hidden></span></button>
+    <button class="nav-tab" data-page="list">志愿表 <span class="badge" id="listBadge" hidden></span></button>
+  </div>
+  <button class="theme-btn" id="themeBtn" title="切换深色/浅色模式">◐</button>
+</nav>
+
+<main class="wrap">
+
+  <!-- ════ 智能推荐 ════ -->
+  <section class="page on" id="page-home">
+    <div class="hero">
+      <h1>科学填报,不浪费一分</h1>
+      <p>输入你的高考成绩,系统基于一分一段位次换算与历年录取数据,智能生成「冲 · 稳 · 保」三档院校推荐,并给出录取概率参考。</p>
+      <div class="hero-tags">
+        <span class="hero-tag">⚡ 冲稳保智能推荐</span>
+        <span class="hero-tag">📊 分数位次互换</span>
+        <span class="hero-tag">🏛 84所院校三年线差</span>
+        <span class="hero-tag">⚖️ 院校横向对比</span>
+        <span class="hero-tag">📋 志愿表一键导出</span>
+      </div>
+    </div>
+
+    <div class="card score-form">
+      <div class="sf-title">我的成绩</div>
+      <div class="sf-grid">
+        <div class="field field-track">
+          <label>首选科目类别</label>
+          <div class="seg" id="trackSeg">
+            <button data-track="wu" class="on">物理类</button>
+            <button data-track="li">历史类</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>高考总分(含政策加分)</label>
+          <input class="inp" id="scoreInp" type="number" min="150" max="750" placeholder="例如 596">
+        </div>
+        <div class="field">
+          <label>省排名位次(选填,留空自动换算)</label>
+          <input class="inp" id="rankInp" type="number" min="1" placeholder="例如 63500">
+        </div>
+        <div class="field field-btn">
+          <label>&nbsp;</label>
+          <button class="btn" id="goBtn">生成志愿推荐 →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="lines-row" id="linesRow"></div>
+
+    <div id="recArea" hidden>
+      <div class="me-bar" id="meBar"></div>
+      <div class="rec-tabs" id="recTabs">
+        <button class="rec-tab chong on" data-band="chong">
+          <div class="t">冲一冲 <span class="n" id="nChong">0</span></div>
+          <div class="d">录取概率 15% ~ 45%,够得着的理想院校</div>
+        </button>
+        <button class="rec-tab wen" data-band="wen">
+          <div class="t">稳一稳 <span class="n" id="nWen">0</span></div>
+          <div class="d">录取概率 45% ~ 80%,实力匹配的主力志愿</div>
+        </button>
+        <button class="rec-tab bao" data-band="bao">
+          <div class="t">保一保 <span class="n" id="nBao">0</span></div>
+          <div class="d">录取概率 80% 以上,确保有学上的兜底选择</div>
+        </button>
+      </div>
+      <div class="school-grid" id="recGrid"></div>
+    </div>
+  </section>
+
+  <!-- ════ 一分一段 ════ -->
+  <section class="page" id="page-rank">
+    <div class="conv-grid">
+      <div class="card conv-card">
+        <h3>分数 → 位次</h3>
+        <div style="display:flex;gap:10px">
+          <input class="inp" id="s2rInp" type="number" placeholder="输入分数,如 596" min="150" max="750">
+          <button class="btn" style="flex-shrink:0" onclick="App.s2r()">换算</button>
+        </div>
+        <div class="conv-out" id="s2rOut">输入分数后,可查询对应的全省排名位次与同分人数。</div>
+      </div>
+      <div class="card conv-card">
+        <h3>位次 → 分数</h3>
+        <div style="display:flex;gap:10px">
+          <input class="inp" id="r2sInp" type="number" placeholder="输入位次,如 63500" min="1">
+          <button class="btn" style="flex-shrink:0" onclick="App.r2s()">换算</button>
+        </div>
+        <div class="conv-out" id="r2sOut">输入位次后,可反查对应的高考分数,用于跨年等位分换算。</div>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <div class="seg" id="rankTrackSeg">
+        <button data-track="wu" class="on">物理类</button>
+        <button data-track="li">历史类</button>
+      </div>
+      <select class="sel" id="bandSel"></select>
+      <span class="count-hint" style="margin:0">2026年模拟一分一段表(演示数据)</span>
+    </div>
+    <div class="card table-card">
+      <table>
+        <thead><tr><th>分数</th><th>本段人数</th><th>累计人数(位次)</th><th>位次百分比</th></tr></thead>
+        <tbody id="rankTbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ════ 院校库 ════ -->
+  <section class="page" id="page-schools">
+    <div class="filter-bar">
+      <input class="inp" id="schSearch" placeholder="🔍 搜索院校名称、城市、优势专业…">
+      <select class="sel" id="provSel"><option value="">全部省份</option></select>
+      <select class="sel" id="typeSel"><option value="">全部类型</option></select>
+      <select class="sel" id="sortSel">
+        <option value="score-desc">按分数 高→低</option>
+        <option value="score-asc">按分数 低→高</option>
+        <option value="name">按名称</option>
+      </select>
+    </div>
+    <div class="chips" id="tagChips">
+      <button class="chip on" data-tag="">全部</button>
+      <button class="chip" data-tag="985">985</button>
+      <button class="chip" data-tag="211">211</button>
+      <button class="chip" data-tag="双一流">双一流</button>
+      <button class="chip" data-tag="川内">四川省内</button>
+      <button class="chip" data-tag="公办">公办</button>
+      <button class="chip" data-tag="民办">民办</button>
+    </div>
+    <div class="count-hint" id="schCount"></div>
+    <div class="school-grid" id="schGrid"></div>
+  </section>
+
+  <!-- ════ 专业库 ════ -->
+  <section class="page" id="page-majors">
+    <div class="filter-bar">
+      <input class="inp" id="mjSearch" placeholder="🔍 搜索专业名称、就业方向…">
+    </div>
+    <div class="chips" id="mjChips"></div>
+    <div class="count-hint" id="mjCount"></div>
+    <div class="major-grid" id="mjGrid"></div>
+  </section>
+
+  <!-- ════ 收藏 ════ -->
+  <section class="page" id="page-fav">
+    <div class="zy-head">
+      <div><h2>我的收藏</h2><div class="sub">点亮院校卡片右上角 ★ 即可收藏,数据保存在本机浏览器。</div></div>
+    </div>
+    <div class="school-grid" id="favGrid"></div>
+    <div class="empty" id="favEmpty" hidden>
+      <div class="big">☆</div>
+      <p>还没有收藏任何院校,去「院校库」逛逛吧。</p>
+    </div>
+  </section>
+
+  <!-- ════ 志愿表 ════ -->
+  <section class="page" id="page-list">
+    <div class="zy-head">
+      <div>
+        <h2>我的志愿表 <span id="zyTrackTag" style="font-size:13px;color:var(--text-3);font-weight:500"></span></h2>
+        <div class="sub">平行志愿按从上到下顺序投档,建议遵循「冲稳保」梯度排列,最多 45 个志愿。</div>
+      </div>
+      <div class="zy-actions">
+        <button class="btn-ghost btn" onclick="App.exportCSV()">⬇ 导出 CSV</button>
+        <button class="btn-ghost btn" onclick="window.print()">🖨 打印</button>
+        <button class="btn-ghost btn" onclick="App.clearList()" style="color:var(--red)">✕ 清空</button>
+      </div>
+    </div>
+    <div id="zyList"></div>
+    <div class="empty" id="zyEmpty" hidden>
+      <div class="big">📋</div>
+      <p>志愿表还是空的。<br>在「智能推荐」或「院校库」中点击「加入志愿」即可添加。</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- 院校详情弹窗 -->
+<div class="modal-mask" id="detailMask">
+  <div class="modal" id="detailModal"></div>
+</div>
+
+<!-- 对比弹窗 -->
+<div class="modal-mask" id="cmpMask">
+  <div class="modal modal-lg">
+    <div class="modal-head">
+      <h3 style="font-size:18px;font-weight:800">院校对比</h3>
+      <button class="modal-close" onclick="App.closeCmp()">✕</button>
+    </div>
+    <div class="modal-body cmp-table-wrap" id="cmpBody"></div>
+  </div>
+</div>
+
+<!-- 对比悬浮栏 -->
+<div class="cmp-bar" id="cmpBar">
+  <span class="names" id="cmpNames"></span>
+  <button class="btn btn-sm" onclick="App.openCmp()">对比 (<span id="cmpN">0</span>)</button>
+  <button class="btn-ghost btn btn-sm" onclick="App.clearCmp()">清空</button>
+</div>
+
+<div class="toast-box" id="toastBox"></div>
+
+<footer class="footer">
+  启航志愿 · 高考志愿填报辅助系统(演示版)<br>
+  <b>⚠ 本站为技术演示项目,页面中的分数线、位次、招生计划等全部数据均为模拟示例,</b><br>
+  正式填报志愿请以四川省教育考试院及各高校官方公布的数据为准。
+</footer>
+
+<script>
+'use strict';
+/* ════════════════════════════════════════════
+   数据层(演示用模拟数据)
+   ════════════════════════════════════════════ */
+
+// 批次线(模拟)
+const BATCH_LINES = {
+  wu: { tk: 575, bk: 459, name: '物理类' },
+  li: { tk: 535, bk: 457, name: '历史类' },
+};
+
+// 一分一段锚点 [分数, 累计人数],锚点间线性插值
+const RANK_ANCHORS = {
+  wu: [[750,1],[720,160],[710,520],[700,1500],[690,3300],[680,6300],[670,10100],[660,14600],
+       [650,20100],[640,26500],[630,34000],[620,42500],[610,52000],[600,62500],[590,73800],
+       [580,85800],[570,98300],[560,111300],[550,124600],[540,138300],[530,152600],[520,167500],
+       [510,183000],[500,199000],[490,215300],[480,231500],[470,247200],[460,262300],[450,276500],
+       [440,289600],[430,301500],[420,312200],[410,321700],[400,330000],[390,337200],[380,343400],
+       [370,348700],[360,353200],[350,357000],[340,360200],[330,362800],[320,364900],[310,366500],[300,367700]],
+  li: [[680,1],[660,90],[650,300],[640,800],[630,1750],[620,3200],[610,5300],[600,8100],
+       [590,11700],[580,16200],[570,21700],[560,28200],[550,35800],[540,44500],[530,54200],
+       [520,64800],[510,76200],[500,88300],[490,100900],[480,113800],[470,126800],[460,139700],
+       [450,152200],[440,164100],[430,175200],[420,185300],[410,194300],[400,202100],[390,208700],
+       [380,214200],[370,218700],[360,222300],[350,225200],[340,227500],[330,229300],[320,230700],[310,231800],[300,232600]],
+};
+
+// 院校库:[校名, 省, 市, 类型, 标签, 性质, 2025物理类投档分, 优势专业, 一句话简介]
+// 标签:9=985 2=211 s=双一流(均含双一流标签时自动补)
+const RAW_SCHOOLS = [
+['清华大学','北京','北京','综合','9,2,s','公办',693,['计算机科学与技术','电子信息','自动化','建筑学'],'中国顶尖学府,工科实力全国第一。'],
+['北京大学','北京','北京','综合','9,2,s','公办',691,['数学','物理学','临床医学','法学'],'文理医并重的世界一流综合性大学。'],
+['上海交通大学','上海','上海','综合','9,2,s','公办',681,['船舶与海洋工程','计算机','临床医学','机械工程'],'工医结合,科研经费长期居全国前列。'],
+['复旦大学','上海','上海','综合','9,2,s','公办',679,['新闻传播学','经济学','临床医学','微电子'],'人文社科与医学享誉全国的综合名校。'],
+['浙江大学','浙江','杭州','综合','9,2,s','公办',676,['计算机','控制科学','光电信息','农学'],'学科门类最齐全的巨型综合大学之一。'],
+['中国科学技术大学','安徽','合肥','理工','9,2,s','公办',672,['物理学','量子信息','数学','化学'],'精品理科办学,科研深造率极高。'],
+['南京大学','江苏','南京','综合','9,2,s','公办',670,['天文学','物理学','中文','地质学'],'基础学科见长的传统顶尖名校。'],
+['中国人民大学','北京','北京','综合','9,2,s','公办',662,['法学','经济学','新闻学','社会学'],'人文社科领域的最高学府之一。'],
+['北京航空航天大学','北京','北京','理工','9,2,s','公办',658,['航空宇航','计算机','软件工程','仪器科学'],'空天信融合的工科强校。'],
+['同济大学','上海','上海','理工','9,2,s','公办',650,['土木工程','建筑学','城乡规划','车辆工程'],'土木建筑领域执牛耳者。'],
+['西安交通大学','陕西','西安','综合','9,2,s','公办',648,['电气工程','能源动力','机械工程','管理科学'],'西部工科旗舰,电气动力全国顶尖。'],
+['武汉大学','湖北','武汉','综合','9,2,s','公办',645,['测绘科学','遥感','法学','水利工程'],'测绘遥感世界领先的综合名校。'],
+['北京理工大学','北京','北京','理工','9,2,s','公办',645,['兵器科学','车辆工程','信息工程','宇航'],'国防七子之一,车辆兵器特色鲜明。'],
+['北京师范大学','北京','北京','师范','9,2,s','公办',645,['教育学','心理学','中国语言文学','地理学'],'中国师范教育的最高殿堂。'],
+['哈尔滨工业大学','黑龙江','哈尔滨','理工','9,2,s','公办',644,['航天工程','机器人','焊接技术','计算机'],'航天第一校,工程实力雄厚。'],
+['华中科技大学','湖北','武汉','理工','9,2,s','公办',642,['机械工程','光电信息','电气工程','临床医学'],'工医并举,光电与机械全国前列。'],
+['东南大学','江苏','南京','理工','9,2,s','公办',640,['建筑学','土木工程','电子信息','交通运输'],'建筑老八校,电子信息实力强劲。'],
+['华东师范大学','上海','上海','师范','9,2,s','公办',638,['教育学','心理学','地理学','软件工程'],'沪上师范名校,教育心理全国顶尖。'],
+['南开大学','天津','天津','综合','9,2,s','公办',638,['化学','数学','经济学','历史学'],'文理并重的百年名校。'],
+['天津大学','天津','天津','理工','9,2,s','公办',634,['化学工程','建筑学','精密仪器','水利'],'中国第一所现代大学,化工第一。'],
+['电子科技大学','四川','成都','理工','9,2,s','公办',632,['电子科学与技术','信息与通信工程','计算机','微电子'],'电子信息领域的国家队,成都两电之一。'],
+['中山大学','广东','广州','综合','9,2,s','公办',632,['临床医学','工商管理','生态学','哲学'],'华南第一学府,医科实力突出。'],
+['北京邮电大学','北京','北京','理工','2,s','公办',632,['通信工程','计算机','人工智能','网络空间安全'],'信息通信黄埔军校,就业质量极高。'],
+['厦门大学','福建','厦门','综合','9,2,s','公办',630,['会计学','海洋科学','化学','金融学'],'最美海滨校园,经管学科著称。'],
+['西北工业大学','陕西','西安','理工','9,2,s','公办',628,['航空航天','材料科学','无人机','水中兵器'],'三航(航空航天航海)特色国防强校。'],
+['上海财经大学','上海','上海','财经','2,s','公办',628,['金融学','会计学','经济学','统计学'],'财经类院校排头兵,金融就业优势大。'],
+['四川大学','四川','成都','综合','9,2,s','公办',622,['口腔医学','临床医学','高分子材料','华西护理'],'西部第一综合大学,口腔医学亚洲领先。'],
+['中央财经大学','北京','北京','财经','2,s','公办',622,['金融学','会计学','财政学','保险学'],'中国财经管理专家的摇篮。'],
+['华南理工大学','广东','广州','理工','9,2,s','公办',620,['建筑学','轻工技术','材料','食品科学'],'华南工科旗舰,毗邻大湾区就业沃土。'],
+['山东大学','山东','济南','综合','9,2,s','公办',618,['数学','中文','临床医学','材料'],'学科齐全的百年综合名校。'],
+['西安电子科技大学','陕西','西安','理工','2,s','公办',618,['电子信息','通信工程','网络安全','人工智能'],'雷达通信领域传统强校,IT就业极佳。'],
+['对外经济贸易大学','北京','北京','财经','2,s','公办',618,['国际经济与贸易','金融学','商务外语','法学'],'国际化程度最高的财经名校之一。'],
+['中南大学','湖南','长沙','综合','9,2,s','公办',615,['冶金工程','矿业','临床医学(湘雅)','轨道交通'],'有色金属与湘雅医学双王牌。'],
+['重庆大学','重庆','重庆','综合','9,2,s','公办',612,['建筑学','电气工程','土木工程','机械'],'西南工科重镇,建筑老八校。'],
+['南京航空航天大学','江苏','南京','理工','2,s','公办',612,['航空宇航','飞行器设计','机电工程','民航'],'民航与航空工程特色名校。'],
+['湖南大学','湖南','长沙','综合','9,2,s','公办',610,['车辆工程','土木工程','工业设计','金融'],'千年学府,车辆与设计学科著称。'],
+['南京理工大学','江苏','南京','理工','2,s','公办',608,['兵器科学','光电工程','自动化','材料'],'兵器技术人才培养基地。'],
+['大连理工大学','辽宁','大连','理工','9,2,s','公办',605,['化学工程','船舶','力学','土木'],'东北工科代表,化工力学见长。'],
+['北京交通大学','北京','北京','理工','2,s','公办',605,['交通运输','通信工程','物流','土木'],'轨道交通行业的黄埔军校。'],
+['中国农业大学','北京','北京','农林','9,2,s','公办',600,['农业工程','食品科学','动物医学','生物'],'农业科学的最高学府。'],
+['华东理工大学','上海','上海','理工','2,s','公办',600,['化学工程','制药工程','材料','过程装备'],'化工领域顶尖,地处上海就业好。'],
+['北京科技大学','北京','北京','理工','2,s','公办',598,['冶金工程','材料科学','矿业','自动化'],'钢铁摇篮,材料冶金全国前列。'],
+['兰州大学','甘肃','兰州','综合','9,2,s','公办',595,['草学','大气科学','化学','核科学'],'西北学术重镇,基础学科扎实。'],
+['中央民族大学','北京','北京','民族','9,2,s','公办',595,['民族学','中国少数民族语言','社会学','舞蹈学'],'民族学科第一,地处北京。'],
+['中国海洋大学','山东','青岛','综合','9,2,s','公办',592,['海洋科学','水产','食品科学','大气'],'海洋水产学科世界一流。'],
+['华中师范大学','湖北','武汉','师范','2,s','公办',590,['教育学','心理学','政治学','汉语言文学'],'部属师范名校,基础教育圈口碑佳。'],
+['苏州大学','江苏','苏州','综合','2,s','公办',590,['纺织工程','光学工程','临床医学','法学'],'地方211标杆,区位优势明显。'],
+['东北大学','辽宁','沈阳','理工','9,2,s','公办',588,['自动化','计算机','冶金','材料'],'自动化与软件强校。'],
+['武汉理工大学','湖北','武汉','理工','2,s','公办',588,['材料科学','船舶','汽车工程','物流'],'建材建工、交通、汽车三大行业底蕴。'],
+['暨南大学','广东','广州','综合','2,s','公办',588,['新闻传播','经济学','药学','华文教育'],'华侨最高学府,新闻经管见长。'],
+['西南财经大学','四川','成都','财经','2,s','公办',588,['金融学','会计学','保险学','统计学'],'西南金融人才摇篮,银行系统校友众多。'],
+['西南交通大学','四川','成都','理工','2,s','公办',585,['交通运输工程','土木工程','车辆工程','电气'],'轨道交通学科全国第一。'],
+['陕西师范大学','陕西','西安','师范','2,s','公办',575,['教育学','心理学','历史学','中文'],'西北教师教育排头兵,公费师范热门。'],
+['西南大学','重庆','重庆','综合','2,s','公办',575,['教育学','心理学','农学','蚕学'],'师范与农学并举的综合性大学。'],
+['西北农林科技大学','陕西','咸阳','农林','9,2,s','公办',572,['农学','植物保护','葡萄酒','水土保持'],'农林水学科特色鲜明的985。'],
+['郑州大学','河南','郑州','综合','2,s','公办',572,['材料','临床医学','化学','考古'],'在校生规模最大的巨型211。'],
+['云南大学','云南','昆明','综合','2,s','公办',560,['民族学','生态学','生物学','历史'],'边疆综合名校,生态民族学科一流。'],
+['成都理工大学','四川','成都','理工','s','公办',558,['地质学','地球物理','石油工程','核技术'],'地学双一流,地质资源领域全国前三。'],
+['四川农业大学','四川','雅安','农林','2,s','公办',555,['动物科学','作物学','风景园林','食品'],'川内211,农林学科扎实。'],
+['广西大学','广西','南宁','综合','2,s','公办',538,['土木工程','电气','蔗糖工程','新闻'],'广西龙头高校,面向东盟区位独特。'],
+['贵州大学','贵州','贵阳','综合','2,s','公办',535,['植物保护','大数据','酿酒','材料'],'贵州唯一211,大数据特色发展。'],
+['四川师范大学','四川','成都','师范','','公办',530,['汉语言文学','数学教育','教育学','心理学'],'川内师范龙头,基础教育就业主力。'],
+['西南石油大学','四川','成都','理工','s','公办',528,['石油与天然气工程','油气储运','机械','化工'],'石油天然气学科双一流。'],
+['成都中医药大学','四川','成都','医药','s','公办',522,['中药学','中医学','针灸推拿','藏药'],'中药学双一流,西南中医药中心。'],
+['西南医科大学','四川','泸州','医药','','公办',518,['临床医学','麻醉学','口腔医学','药学'],'川南医学人才培养基地。'],
+['成都信息工程大学','四川','成都','理工','','公办',512,['大气科学','信息安全','电子信息','计算机'],'气象信息特色,IT就业表现亮眼。'],
+['成都大学','四川','成都','综合','','公办',505,['学前教育','食品科学','软件工程','护理'],'成都市属综合大学,发展势头快。'],
+['西南民族大学','四川','成都','民族','','公办',500,['民族学','法学','畜牧学','金融'],'地处成都的民族院校,学科齐全。'],
+['川北医学院','四川','南充','医药','','公办',498,['临床医学','医学影像学','麻醉学','护理学'],'川东北医学教育中心。'],
+['西华大学','四川','成都','综合','','公办',495,['能源与动力工程','食品科学','机械','车辆'],'川内老牌工科院校,流体机械见长。'],
+['成都工业学院','四川','成都','理工','','公办',482,['材料成型','电子信息工程','机械设计','物流'],'百年工科底蕴的应用型本科。'],
+['四川轻化工大学','四川','自贡','理工','','公办',478,['酿酒工程','化学工程','过程装备','自动化'],'白酒学院闻名,轻工化工特色。'],
+['成都师范学院','四川','成都','师范','','公办',470,['小学教育','学前教育','汉语言文学','数学'],'面向基础教育的省属师范本科。'],
+['绵阳师范学院','四川','绵阳','师范','','公办',465,['汉语言文学','生物科学','数学教育','美术'],'川西北教师培养基地。'],
+['乐山师范学院','四川','乐山','师范','','公办',458,['特殊教育','汉语言文学','旅游管理','英语'],'特殊教育办学特色突出。'],
+['宜宾学院','四川','宜宾','综合','','公办',455,['酿酒工程','法学','汉语言','计算机'],'川南综合性应用型本科。'],
+['内江师范学院','四川','内江','师范','','公办',452,['数学教育','汉语言文学','水产养殖','体育'],'川中南教师教育院校。'],
+['攀枝花学院','四川','攀枝花','综合','','公办',450,['钒钛材料','冶金工程','临床医学','土木'],'钒钛资源特色的应用型大学。'],
+['四川旅游学院','四川','成都','综合','','公办',448,['烹饪与营养教育','酒店管理','旅游管理','休闲体育'],'全国唯一旅游类公办本科。'],
+['西昌学院','四川','西昌','综合','','公办',442,['农学','动物医学','彝语言文化','土木'],'攀西地区综合性本科。'],
+['成都锦城学院','四川','成都','综合','','民办',435,['会计学','计算机','新闻','金融'],'川内头部民办本科,管理严格。'],
+['电子科技大学成都学院','四川','成都','理工','','民办',430,['电子信息工程','计算机','软件技术','微电子'],'依托电子科大资源的民办IT院校。'],
+['四川大学锦江学院','四川','眉山','综合','','民办',425,['会计学','土木工程','计算机','英语'],'环境优美的综合性民办本科。'],
+['吉利学院','四川','成都','综合','','民办',415,['车辆工程','智能制造','数字媒体','市场营销'],'吉利集团举办,汽车产业资源丰富。'],
+];
+
+// 专业库:[专业名, 门类, 学位, 年限, 简介, 就业方向, 应届参考月薪]
+const RAW_MAJORS = [
+['计算机科学与技术','工学','工学学士',4,'研究计算系统的设计与应用,覆盖软件、系统、算法与体系结构。','软件开发、算法工程师、系统架构、互联网大厂研发','9k-18k'],
+['软件工程','工学','工学学士',4,'面向大型软件系统的工程化开发、测试与维护方法。','前后端开发、测试开发、项目管理','9k-16k'],
+['人工智能','工学','工学学士',4,'机器学习、深度学习、自然语言处理与计算机视觉等智能技术。','算法工程师、AI产品、大模型研发','12k-25k'],
+['网络空间安全','工学','工学学士',4,'网络攻防、密码学、安全体系建设与等级保护。','安全工程师、渗透测试、安服与等保','10k-18k'],
+['电子信息工程','工学','工学学士',4,'信号与系统、通信原理与电子电路的设计应用。','硬件研发、嵌入式、通信设备企业','8k-15k'],
+['微电子科学与工程','工学','工学学士',4,'芯片设计、半导体器件与集成电路工艺。','IC设计、版图、晶圆厂工艺工程师','10k-20k'],
+['通信工程','工学','工学学士',4,'现代通信系统、5G/6G网络与信息传输技术。','运营商、设备商、互联网网络岗','9k-16k'],
+['自动化','工学','工学学士',4,'控制理论与工业自动化系统的设计集成。','工业控制、机器人、智能制造','8k-14k'],
+['机械工程','工学','工学学士',4,'机械设计、制造工艺与机电一体化技术。','装备制造、汽车、机器人企业研发','7k-12k'],
+['车辆工程','工学','工学学士',4,'汽车整车与零部件设计,新能源与智能驾驶方向热门。','主机厂研发、新能源车企、智驾公司','8k-15k'],
+['电气工程及其自动化','工学','工学学士',4,'电力系统、电机与新能源发电技术。','国家电网、发电集团、电气设备企业','8k-14k'],
+['土木工程','工学','工学学士',4,'房屋、桥梁、隧道等基础设施的设计与施工。','设计院、施工央企、造价咨询','6k-10k'],
+['建筑学','工学','建筑学学士',5,'建筑设计、城市设计与人居环境营造。','建筑设计院、地产设计岗、自主执业','7k-13k'],
+['航空航天工程','工学','工学学士',4,'飞行器总体、结构与推进系统设计。','航空航天院所、商业航天、民航','9k-15k'],
+['化学工程与工艺','工学','工学学士',4,'化工过程开发、反应工程与分离技术。','化工能源企业、制药、新材料','7k-12k'],
+['材料科学与工程','工学','工学学士',4,'金属、高分子、复合材料的制备与性能研究。','新能源材料、半导体材料、院所','7k-13k'],
+['食品科学与工程','工学','工学学士',4,'食品加工、保藏、质量安全与营养研究。','食品企业研发质检、市场监管','6k-9k'],
+['数学与应用数学','理学','理学学士',4,'分析、代数、几何等数学理论及其应用。','深造、量化金融、数据科学、教师','8k-15k'],
+['物理学','理学','理学学士',4,'物质运动规律与基本相互作用的研究。','科研深造、半导体、光电企业','7k-13k'],
+['化学','理学','理学学士',4,'物质组成、结构、性质与变化规律。','化工医药研发、检测、深造','6k-11k'],
+['生物科学','理学','理学学士',4,'生命现象与生命活动规律的基础研究。','生物医药、基因检测、科研深造','6k-11k'],
+['统计学','理学','理学学士',4,'数据收集、分析与推断的理论与方法。','数据分析、精算、量化风控','8k-15k'],
+['大气科学','理学','理学学士',4,'天气、气候与大气环境的观测和预报。','气象局、民航气象、环保部门','7k-11k'],
+['临床医学','医学','医学学士',5,'疾病诊断、治疗与预防的医学核心专业,通常需继续深造。','三甲医院医师(需规培)、医学研究','规培后10k+'],
+['口腔医学','医学','医学学士',5,'口腔疾病防治与颌面外科技术。','口腔医院、诊所执业、种植正畸','10k-20k'],
+['麻醉学','医学','医学学士',5,'围手术期麻醉管理与急救复苏。','医院麻醉科、疼痛科','规培后10k+'],
+['中医学','医学','医学学士',5,'中医理论与临床诊疗技术的传承创新。','中医院、康复理疗、养生健康产业','6k-10k'],
+['药学','医学','理学学士',4,'药物研发、生产、质控与临床合理用药。','药企研发、医院药房、CRO企业','7k-12k'],
+['护理学','医学','理学学士',4,'临床护理、社区护理与健康管理。','医院护理岗、国际护理、养老产业','6k-9k'],
+['金融学','经济学','经济学学士',4,'货币银行、证券投资与公司金融理论实务。','银行、券商、基金、监管机构','8k-15k'],
+['经济学','经济学','经济学学士',4,'经济运行规律与资源配置的理论分析。','政策研究、银行、咨询、深造','7k-13k'],
+['国际经济与贸易','经济学','经济学学士',4,'国际贸易规则、跨境投资与全球供应链。','外贸企业、跨境电商、商务部门','6k-11k'],
+['会计学','管理学','管理学学士',4,'财务核算、审计鉴证与管理会计。','会计师事务所、企业财务、CFO路线','6k-11k'],
+['工商管理','管理学','管理学学士',4,'企业战略、运营、营销与组织管理。','管培生、咨询、人力与运营岗','6k-10k'],
+['市场营销','管理学','管理学学士',4,'市场分析、品牌策划与数字化营销。','品牌运营、增长营销、电商','6k-10k'],
+['物流管理','管理学','管理学学士',4,'供应链规划、仓储运输与智慧物流。','物流企业、制造业供应链、电商仓配','6k-9k'],
+['法学','法学','法学学士',4,'法律理论与立法、司法、执法实务。','律师(需法考)、法务、公检法','7k-13k'],
+['汉语言文学','文学','文学学士',4,'中国语言文字与文学的研究与应用。','教师、公务员、媒体编辑、文案','5k-9k'],
+['英语','文学','文学学士',4,'英语语言文学与跨文化交际能力培养。','翻译、外贸、教育培训、涉外文秘','5k-9k'],
+['新闻学','文学','文学学士',4,'新闻采写编评与全媒体传播实务。','媒体记者、新媒体运营、公关','5k-10k'],
+['教育学','教育学','教育学学士',4,'教育理论、课程教学与教育管理研究。','教师、教育管理、教育科技企业','5k-9k'],
+['学前教育','教育学','教育学学士',4,'0-6岁儿童发展规律与保教实践。','幼儿园教师、早教机构、托育管理','4k-7k'],
+['心理学','教育学','理学学士',4,'人的心理过程与行为规律的科学研究。','心理咨询、用户研究、人力测评','6k-11k'],
+['历史学','历史学','历史学学士',4,'人类社会历史进程的研究与阐释。','教师、文博机构、公务员、深造','5k-8k'],
+['农学','农学','农学学士',4,'作物育种、栽培与现代农业技术。','农业科技企业、种业、农技推广','5k-9k'],
+['动物医学','农学','农学学士',5,'动物疾病诊疗与公共卫生检疫。','宠物医院、海关检疫、养殖企业','6k-12k'],
+['风景园林','农学','工学学士',4,'园林规划设计与生态景观营造。','景观设计院、市政园林、地产景观','6k-10k'],
+['视觉传达设计','艺术学','艺术学学士',4,'平面、品牌与数字媒体视觉设计。','UI设计、品牌设计、游戏美术','6k-11k'],
+];
+
+/* ════════════════════════════════════════════
+   工具函数
+   ════════════════════════════════════════════ */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const fmt = n => n.toLocaleString('zh-CN');
+function hash(s){let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return Math.abs(h)}
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+// 分数 → 累计位次(线性插值)
+function rankOf(score, track){
+  const a = RANK_ANCHORS[track];
+  if(score >= a[0][0]) return a[0][1];
+  if(score <= a[a.length-1][0]) return a[a.length-1][1];
+  for(let i=0;i<a.length-1;i++){
+    const [s1,r1]=a[i],[s2,r2]=a[i+1];
+    if(score<=s1 && score>=s2){
+      return Math.round(r1 + (s1-score)*(r2-r1)/(s1-s2));
+    }
+  }
+  return a[a.length-1][1];
+}
+// 位次 → 分数
+function scoreOf(rank, track){
+  const a = RANK_ANCHORS[track];
+  if(rank <= a[0][1]) return a[0][0];
+  if(rank >= a[a.length-1][1]) return a[a.length-1][0];
+  for(let i=0;i<a.length-1;i++){
+    const [s1,r1]=a[i],[s2,r2]=a[i+1];
+    if(rank>=r1 && rank<=r2){
+      return Math.round(s1 - (rank-r1)*(s1-s2)/(r2-r1));
+    }
+  }
+  return a[a.length-1][0];
+}
+// 总考生数
+const totalOf = track => RANK_ANCHORS[track][RANK_ANCHORS[track].length-1][1];
+
+/* ── 院校对象构建(由原始数据派生三年分数、历史类分数、计划数) ── */
+const SCHOOLS = RAW_SCHOOLS.map((r,idx)=>{
+  const [name,prov,city,type,tagStr,nature,wu25,majors,blurb]=r;
+  const h = hash(name);
+  // 历史类分数:由物理类分数推算并加确定性扰动
+  const li25 = Math.max(320, Math.round(wu25 - 13 - (wu25-440)*0.055 + (h%7) - 3));
+  const j = yr => (hash(name+yr)%9) - 4; // -4..+4 扰动
+  const tags = tagStr ? tagStr.split(',').map(t=>({'9':'985','2':'211','s':'双一流'}[t])) : [];
+  return {
+    id: idx, name, prov, city, type, nature, tags, majors, blurb,
+    scores: {
+      wu: {2025: wu25, 2024: wu25 + j('a'), 2023: wu25 + j('b') + 1},
+      li: {2025: li25, 2024: li25 + j('c'), 2023: li25 + j('d') + 1},
+    },
+    plan: 40 + h % 180,            // 模拟在川招生计划
+    groups: 1 + h % 4,             // 模拟专业组数
+  };
+});
+const PROVINCES = [...new Set(SCHOOLS.map(s=>s.prov))].sort((a,b)=>a.localeCompare(b,'zh'));
+const TYPES = [...new Set(SCHOOLS.map(s=>s.type))];
+const MAJOR_CATS = [...new Set(RAW_MAJORS.map(m=>m[1]))];
+
+// 录取概率:基于「院校投档位次 / 考生位次」的逻辑斯蒂模型
+function admitProb(userRank, schoolRank){
+  const r = schoolRank / userRank;
+  const p = 1 / (1 + Math.exp(-(r-1)*5.5));
+  return Math.min(.98, Math.max(.02, p));
+}
+const bandOf = p => p < .45 ? 'chong' : p < .8 ? 'wen' : 'bao';
+const BAND_META = {
+  chong:{label:'冲',color:'var(--red)'},
+  wen:{label:'稳',color:'var(--orange)'},
+  bao:{label:'保',color:'var(--green)'},
+};
+
+/* ════════════════════════════════════════════
+   应用状态
+   ════════════════════════════════════════════ */
+const store = {
+  get(k,d){try{const v=localStorage.getItem('qhzy_'+k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem('qhzy_'+k,JSON.stringify(v))}catch(e){}},
+};
+const state = {
+  track: 'wu',
+  profile: store.get('profile', null),   // {track, score, rank}
+  recBand: 'chong',
+  recList: [],
+  favs: new Set(store.get('favs', [])),
+  zyList: store.get('list', []),         // [{schoolId, major}]
+  cmp: new Set(),
+  rankTrack: 'wu',
+  schFilter: {q:'', prov:'', type:'', tag:'', sort:'score-desc'},
+  mjFilter: {q:'', cat:''},
+};
+
+/* ════════════════════════════════════════════
+   渲染:通用院校卡片
+   ════════════════════════════════════════════ */
+const AV_COLORS = ['#3056ff','#7c3aed','#0ea5e9','#10a667','#f08c00','#e23d3d','#d946ef','#0d9488'];
+function tagHtml(s){
+  const t = [];
+  for(const tag of s.tags){
+    if(tag==='985') t.push('<span class="tag tag-985">985</span>');
+    else if(tag==='211') t.push('<span class="tag tag-211">211</span>');
+    else if(tag==='双一流') t.push('<span class="tag tag-sy">双一流</span>');
+  }
+  t.push(`<span class="tag ${s.nature==='公办'?'tag-gb':'tag-mb'}">${s.nature}</span>`);
+  t.push(`<span class="tag tag-norm">${esc(s.type)}</span>`);
+  return t.join('');
+}
+function schoolCard(s, opt={}){
+  const track = (state.profile && state.profile.track) || state.track;
+  const sc25 = s.scores[track][2025];
+  const rk25 = rankOf(sc25, track);
+  const av = AV_COLORS[s.id % AV_COLORS.length];
+  let probHtml = '';
+  if(state.profile && state.profile.track === track){
+    const p = admitProb(state.profile.rank, rk25);
+    const b = BAND_META[bandOf(p)];
+    probHtml = `
+    <div class="prob-wrap">
+      <div class="prob-row"><span>预估录取概率</span><b style="color:${b.color}">${Math.round(p*100)}% · ${b.label}</b></div>
+      <div class="prob-bar"><i style="width:${Math.round(p*100)}%;background:${b.color}"></i></div>
+    </div>`;
+  }
+  const inList = state.zyList.some(it=>it.schoolId===s.id);
+  return `
+  <div class="sc">
+    <button class="fav-btn ${state.favs.has(s.id)?'on':''}" onclick="App.toggleFav(${s.id})" title="收藏">${state.favs.has(s.id)?'★':'☆'}</button>
+    <label class="cmp-check"><input type="checkbox" ${state.cmp.has(s.id)?'checked':''} onchange="App.toggleCmp(${s.id},this)">对比</label>
+    <div class="sc-head">
+      <div class="sc-avatar" style="background:linear-gradient(135deg,${av},${av}cc)">${esc(s.name[0])}</div>
+      <div>
+        <div class="sc-name" onclick="App.openDetail(${s.id})">${esc(s.name)}</div>
+        <div class="sc-meta">${esc(s.prov)} · ${esc(s.city)} · 模拟计划 ${s.plan} 人</div>
+      </div>
+    </div>
+    <div class="sc-tags">${tagHtml(s)}</div>
+    <div class="sc-scores">
+      <div class="sc-score"><div class="k">2025 投档分</div><div class="v">${sc25}<small> 分</small></div></div>
+      <div class="sc-score"><div class="k">2025 位次</div><div class="v">${fmt(rk25)}<small> 名</small></div></div>
+      <div class="sc-score"><div class="k">2024 / 2023</div><div class="v" style="font-size:14px;padding-top:4px">${s.scores[track][2024]} / ${s.scores[track][2023]}<small> 分</small></div></div>
+    </div>
+    ${probHtml}
+    <div class="sc-actions">
+      <button class="btn-ghost btn" onclick="App.openDetail(${s.id})">查看详情</button>
+      <button class="btn-ghost btn" style="${inList?'color:var(--green);border-color:var(--green)':''}" onclick="App.addToList(${s.id})">${inList?'✓ 已加入':'＋ 加入志愿'}</button>
+    </div>
+  </div>`;
+}
+
+/* ════════════════════════════════════════════
+   App 主体
+   ════════════════════════════════════════════ */
+const App = {
+
+  /* ── 导航 ── */
+  switchPage(id){
+    $$('.page').forEach(p=>p.classList.toggle('on', p.id==='page-'+id));
+    $$('.nav-tab').forEach(t=>t.classList.toggle('on', t.dataset.page===id));
+    if(id==='schools') this.renderSchools();
+    if(id==='majors') this.renderMajors();
+    if(id==='fav') this.renderFavs();
+    if(id==='list') this.renderList();
+    if(id==='rank') this.renderRankTable();
+    window.scrollTo({top:0});
+  },
+
+  /* ── 批次线 ── */
+  renderLines(){
+    $('#linesRow').innerHTML = ['wu','li'].map(t=>{
+      const L = BATCH_LINES[t];
+      return `
+      <div class="line-card"><div class="k">${L.name} · 特殊类型招生控制线</div><div class="v">${L.tk}</div><div class="s">2026 模拟批线</div></div>
+      <div class="line-card"><div class="k">${L.name} · 本科批次线</div><div class="v">${L.bk}</div><div class="s">2026 模拟批线</div></div>`;
+    }).join('');
+  },
+
+  /* ── 智能推荐 ── */
+  generate(){
+    const score = parseInt($('#scoreInp').value, 10);
+    if(!score || score < 150 || score > 750){ this.toast('请输入 150~750 之间的有效分数'); return; }
+    const track = state.track;
+    let rank = parseInt($('#rankInp').value, 10);
+    if(!rank || rank < 1) rank = rankOf(score, track);
+    state.profile = {track, score, rank};
+    store.set('profile', state.profile);
+    this.buildRec();
+    $('#recArea').hidden = false;
+    $('#recArea').scrollIntoView({behavior:'smooth', block:'start'});
+    this.toast('已生成志愿推荐');
+  },
+
+  buildRec(){
+    const {track, score, rank} = state.profile;
+    state.recList = SCHOOLS.map(s=>{
+      const r = rankOf(s.scores[track][2025], track);
+      const p = admitProb(rank, r);
+      return {s, p, band: bandOf(p)};
+    }).filter(it=>it.p >= .08 && it.p <= .985)
+      .sort((a,b)=>b.s.scores[track][2025] - a.s.scores[track][2025]);
+
+    const L = BATCH_LINES[track];
+    const same = rankOf(score, track) - rankOf(score+1, track);
+    $('#meBar').innerHTML = `
+      <div class="me-item"><div class="k">科类</div><div class="v">${L.name}</div></div>
+      <div class="me-item"><div class="k">高考分数</div><div class="v">${score}<em>分</em></div></div>
+      <div class="me-item"><div class="k">全省位次</div><div class="v">${fmt(rank)}<em>名</em></div></div>
+      <div class="me-item"><div class="k">同分人数</div><div class="v">${fmt(Math.max(1,same))}<em>人</em></div></div>
+      <div class="me-item"><div class="k">超本科线</div><div class="v" style="color:${score>=L.bk?'var(--green)':'var(--red)'}">${score>=L.bk?'+':''}${score-L.bk}<em>分</em></div></div>
+      <div class="me-item"><div class="k">超特控线</div><div class="v" style="color:${score>=L.tk?'var(--green)':'var(--red)'}">${score>=L.tk?'+':''}${score-L.tk}<em>分</em></div></div>`;
+
+    for(const b of ['chong','wen','bao']){
+      const n = state.recList.filter(it=>it.band===b).length;
+      $('#n'+({chong:'Chong',wen:'Wen',bao:'Bao'}[b])).textContent = n;
+    }
+    this.renderRec();
+  },
+
+  renderRec(){
+    $$('#recTabs .rec-tab').forEach(t=>t.classList.toggle('on', t.dataset.band===state.recBand));
+    const items = state.recList.filter(it=>it.band===state.recBand).slice(0, 24);
+    $('#recGrid').innerHTML = items.length
+      ? items.map(it=>schoolCard(it.s)).join('')
+      : `<div class="empty" style="grid-column:1/-1"><div class="big">🔍</div><p>该档位暂无匹配院校,试试调整分数或查看其他档位。</p></div>`;
+  },
+
+  /* ── 一分一段 ── */
+  renderRankTable(){
+    const t = state.rankTrack;
+    const sel = $('#bandSel');
+    if(!sel.options.length || sel.dataset.track !== t){
+      const a = RANK_ANCHORS[t];
+      const top = a[0][0], bottom = a[a.length-1][0];
+      let opts = '';
+      for(let hi = Math.ceil(top/50)*50; hi > bottom; hi -= 50){
+        const lo = Math.max(bottom, hi-49);
+        opts += `<option value="${hi}">${lo} ~ ${Math.min(hi,750)} 分</option>`;
+      }
+      sel.innerHTML = opts;
+      sel.dataset.track = t;
+      // 默认显示中段
+      sel.value = t==='wu' ? '600' : '550';
+      if(!sel.value) sel.selectedIndex = 0;
+    }
+    const hi = Math.min(parseInt(sel.value,10), RANK_ANCHORS[t][0][0]);
+    const lo = Math.max(hi-49, RANK_ANCHORS[t][RANK_ANCHORS[t].length-1][0]);
+    const total = totalOf(t);
+    const hlScore = state.profile && state.profile.track===t ? state.profile.score : -1;
+    let rows = '';
+    for(let s = hi; s >= lo; s--){
+      const cum = rankOf(s, t);
+      const seg = Math.max(0, rankOf(s-1,t) - cum) || (rankOf(s,t)-rankOf(s+1,t));
+      const pct = (cum/total*100).toFixed(2);
+      rows += `<tr class="${s===hlScore?'tr-hl':''}">
+        <td class="num"><b>${s}</b>${s===hlScore?' <span class="tag tag-sy">我的分数</span>':''}</td>
+        <td class="num">${fmt(Math.max(1,seg))}</td>
+        <td class="num">${fmt(cum)}</td>
+        <td class="num">前 ${pct}%</td>
+      </tr>`;
+    }
+    $('#rankTbody').innerHTML = rows;
+  },
+  s2r(){
+    const v = parseInt($('#s2rInp').value,10);
+    if(!v){ this.toast('请输入分数'); return; }
+    const t = state.rankTrack;
+    const r = rankOf(v, t);
+    const same = Math.max(1, rankOf(v,t) - rankOf(v+1,t));
+    $('#s2rOut').innerHTML = `${BATCH_LINES[t].name} <b>${v}</b> 分 ≈ 全省位次 <b>${fmt(r)}</b> 名,同分约 ${fmt(same)} 人,位于全省前 ${(r/totalOf(t)*100).toFixed(2)}%。`;
+  },
+  r2s(){
+    const v = parseInt($('#r2sInp').value,10);
+    if(!v){ this.toast('请输入位次'); return; }
+    const t = state.rankTrack;
+    const s = scoreOf(v, t);
+    $('#r2sOut').innerHTML = `${BATCH_LINES[t].name}位次 <b>${fmt(v)}</b> 名 ≈ 高考分数 <b>${s}</b> 分(可用于跨年等位分对照)。`;
+  },
+
+  /* ── 院校库 ── */
+  renderSchools(){
+    const f = state.schFilter;
+    const track = (state.profile && state.profile.track) || state.track;
+    let list = SCHOOLS.filter(s=>{
+      if(f.q){
+        const q = f.q.toLowerCase();
+        const hay = (s.name + s.prov + s.city + s.type + s.majors.join('')).toLowerCase();
+        if(!hay.includes(q)) return false;
+      }
+      if(f.prov && s.prov !== f.prov) return false;
+      if(f.type && s.type !== f.type) return false;
+      if(f.tag){
+        if(f.tag==='川内'){ if(s.prov!=='四川') return false; }
+        else if(f.tag==='公办'||f.tag==='民办'){ if(s.nature!==f.tag) return false; }
+        else if(!s.tags.includes(f.tag)) return false;
+      }
+      return true;
+    });
+    if(f.sort==='score-desc') list.sort((a,b)=>b.scores[track][2025]-a.scores[track][2025]);
+    else if(f.sort==='score-asc') list.sort((a,b)=>a.scores[track][2025]-b.scores[track][2025]);
+    else list.sort((a,b)=>a.name.localeCompare(b.name,'zh'));
+    $('#schCount').textContent = `共找到 ${list.length} 所院校(展示 ${BATCH_LINES[track].name} 2025 模拟投档线)`;
+    $('#schGrid').innerHTML = list.map(s=>schoolCard(s)).join('');
+  },
+
+  /* ── 院校详情 ── */
+  openDetail(id){
+    const s = SCHOOLS.find(x=>x.id===id);
+    const track = (state.profile && state.profile.track) || state.track;
+    const years = [2023,2024,2025];
+    const vals = years.map(y=>s.scores[track][y]);
+    const min = Math.min(...vals)-6, max = Math.max(...vals)+6;
+    const W=560,H=150,P=30;
+    const X = i => P + i*(W-2*P)/(years.length-1);
+    const Y = v => H-P - (v-min)*(H-2*P)/(max-min||1);
+    const pts = vals.map((v,i)=>`${X(i)},${Y(v)}`).join(' ');
+    const dots = vals.map((v,i)=>`
+      <circle cx="${X(i)}" cy="${Y(v)}" r="4.5" fill="var(--brand)" stroke="var(--card)" stroke-width="2"/>
+      <text x="${X(i)}" y="${Y(v)-12}" text-anchor="middle" font-size="13" font-weight="700" fill="var(--text)">${v}</text>
+      <text x="${X(i)}" y="${H-8}" text-anchor="middle" font-size="11" fill="var(--text-3)">${years[i]}</text>`).join('');
+    let probHtml='';
+    if(state.profile && state.profile.track===track){
+      const rk = rankOf(s.scores[track][2025], track);
+      const p = admitProb(state.profile.rank, rk);
+      const b = BAND_META[bandOf(p)];
+      probHtml = `<div class="ds"><div class="k">我的录取概率</div><div class="v" style="color:${b.color}">${Math.round(p*100)}%<small> · ${b.label}</small></div></div>`;
+    }
+    $('#detailModal').innerHTML = `
+      <div class="modal-head">
+        <div>
+          <h3 style="font-size:20px;font-weight:800">${esc(s.name)}</h3>
+          <div style="font-size:13px;color:var(--text-3);margin-top:3px">${esc(s.prov)} · ${esc(s.city)} · ${esc(s.type)}类 · ${esc(s.nature)}</div>
+          <div class="sc-tags" style="margin-top:8px">${tagHtml(s)}</div>
+        </div>
+        <button class="modal-close" onclick="App.closeDetail()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:13.5px;color:var(--text-2)">${esc(s.blurb)}</p>
+        <div class="detail-stats">
+          <div class="ds"><div class="k">2025 投档分(${BATCH_LINES[track].name})</div><div class="v">${s.scores[track][2025]}<small> 分</small></div></div>
+          <div class="ds"><div class="k">2025 位次</div><div class="v">${fmt(rankOf(s.scores[track][2025],track))}<small> 名</small></div></div>
+          <div class="ds"><div class="k">模拟在川计划</div><div class="v">${s.plan}<small> 人</small></div></div>
+          <div class="ds"><div class="k">院校专业组</div><div class="v">${s.groups}<small> 个</small></div></div>
+          ${probHtml}
+        </div>
+        <div class="sect-t">近三年投档线走势(${BATCH_LINES[track].name})</div>
+        <div class="chart-box">
+          <svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block">
+            <polyline points="${pts}" fill="none" stroke="var(--brand)" stroke-width="2.5" stroke-linecap="round"/>
+            <polygon points="${P},${H-P} ${pts} ${W-P},${H-P}" fill="var(--brand)" opacity="0.08"/>
+            ${dots}
+          </svg>
+        </div>
+        <div class="sect-t">优势专业(点击选择后加入志愿表)</div>
+        <div class="mj-pills" id="dmPills">
+          ${s.majors.map(m=>`<button class="mj-pill" data-mj="${esc(m)}">${esc(m)}</button>`).join('')}
+          <button class="mj-pill on" data-mj="服从专业调剂">服从专业调剂</button>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:20px">
+          <button class="btn" style="flex:1" onclick="App.addToList(${s.id}, document.querySelector('#dmPills .on').dataset.mj); App.closeDetail()">＋ 加入志愿表</button>
+          <button class="btn-ghost btn" onclick="App.toggleFav(${s.id}); App.openDetail(${s.id})">${state.favs.has(s.id)?'★ 已收藏':'☆ 收藏'}</button>
+        </div>
+      </div>`;
+    $('#dmPills').addEventListener('click', e=>{
+      const b = e.target.closest('.mj-pill'); if(!b) return;
+      $$('#dmPills .mj-pill').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on');
+    });
+    $('#detailMask').classList.add('on');
+  },
+  closeDetail(){ $('#detailMask').classList.remove('on'); },
+
+  /* ── 收藏 ── */
+  toggleFav(id){
+    if(state.favs.has(id)) state.favs.delete(id); else { state.favs.add(id); this.toast('已收藏'); }
+    store.set('favs', [...state.favs]);
+    this.refreshBadges();
+    this.rerenderVisible();
+  },
+  renderFavs(){
+    const list = SCHOOLS.filter(s=>state.favs.has(s.id));
+    $('#favGrid').innerHTML = list.map(s=>schoolCard(s)).join('');
+    $('#favEmpty').hidden = list.length > 0;
+  },
+
+  /* ── 对比 ── */
+  toggleCmp(id, el){
+    if(state.cmp.has(id)) state.cmp.delete(id);
+    else {
+      if(state.cmp.size >= 4){ this.toast('最多同时对比 4 所院校'); el.checked = false; return; }
+      state.cmp.add(id);
+    }
+    this.renderCmpBar();
+  },
+  renderCmpBar(){
+    const list = [...state.cmp].map(id=>SCHOOLS.find(s=>s.id===id));
+    $('#cmpBar').classList.toggle('on', list.length>0);
+    $('#cmpN').textContent = list.length;
+    $('#cmpNames').textContent = list.map(s=>s.name).join(' · ');
+  },
+  clearCmp(){ state.cmp.clear(); this.renderCmpBar(); this.rerenderVisible(); },
+  openCmp(){
+    const list = [...state.cmp].map(id=>SCHOOLS.find(s=>s.id===id));
+    if(list.length<2){ this.toast('请至少勾选 2 所院校'); return; }
+    const track = (state.profile && state.profile.track) || state.track;
+    const row = (k, fn) => `<tr><td>${k}</td>${list.map(s=>`<td>${fn(s)}</td>`).join('')}</tr>`;
+    $('#cmpBody').innerHTML = `<table>
+      <thead><tr><th></th>${list.map(s=>`<th style="font-size:14px;color:var(--text)">${esc(s.name)}</th>`).join('')}</tr></thead>
+      <tbody>
+        ${row('所在地', s=>`${s.prov} · ${s.city}`)}
+        ${row('类型 / 性质', s=>`${s.type} / ${s.nature}`)}
+        ${row('标签', s=>s.tags.join('、')||'—')}
+        ${row(`2025 投档分(${BATCH_LINES[track].name})`, s=>`<b>${s.scores[track][2025]}</b> 分`)}
+        ${row('2025 位次', s=>fmt(rankOf(s.scores[track][2025],track))+' 名')}
+        ${row('2024 投档分', s=>s.scores[track][2024]+' 分')}
+        ${row('2023 投档分', s=>s.scores[track][2023]+' 分')}
+        ${row('模拟在川计划', s=>s.plan+' 人')}
+        ${state.profile && state.profile.track===track ? row('我的录取概率', s=>{
+          const p = admitProb(state.profile.rank, rankOf(s.scores[track][2025],track));
+          const b = BAND_META[bandOf(p)];
+          return `<b style="color:${b.color}">${Math.round(p*100)}% · ${b.label}</b>`;
+        }) : ''}
+        ${row('优势专业', s=>s.majors.join('、'))}
+        ${row('简介', s=>`<span style="font-size:12.5px;color:var(--text-2)">${esc(s.blurb)}</span>`)}
+      </tbody></table>`;
+    $('#cmpMask').classList.add('on');
+  },
+  closeCmp(){ $('#cmpMask').classList.remove('on'); },
+
+  /* ── 专业库 ── */
+  renderMajors(){
+    if(!$('#mjChips').children.length){
+      $('#mjChips').innerHTML = `<button class="chip on" data-cat="">全部</button>` +
+        MAJOR_CATS.map(c=>`<button class="chip" data-cat="${c}">${c}</button>`).join('');
+    }
+    const f = state.mjFilter;
+    const list = RAW_MAJORS.filter(m=>{
+      if(f.cat && m[1]!==f.cat) return false;
+      if(f.q && !(m[0]+m[4]+m[5]).toLowerCase().includes(f.q.toLowerCase())) return false;
+      return true;
+    });
+    $('#mjCount').textContent = `共 ${list.length} 个专业`;
+    $('#mjGrid').innerHTML = list.map(m=>`
+      <div class="mj">
+        <div class="mj-head"><h4>${esc(m[0])}</h4><span class="cat">${esc(m[1])}</span></div>
+        <div class="meta">${esc(m[2])} · 学制 ${m[3]} 年</div>
+        <div class="desc">${esc(m[4])}</div>
+        <div class="jobs"><b>就业方向:</b>${esc(m[5])}</div>
+        <div class="salary">应届参考月薪 <b>${esc(m[6])}</b></div>
+      </div>`).join('');
+  },
+
+  /* ── 志愿表 ── */
+  addToList(schoolId, major='服从专业调剂'){
+    if(state.zyList.length >= 45){ this.toast('志愿表已满(45 个)'); return; }
+    if(state.zyList.some(it=>it.schoolId===schoolId && it.major===major)){
+      this.toast('该志愿已在表中'); return;
+    }
+    state.zyList.push({schoolId, major});
+    store.set('list', state.zyList);
+    this.refreshBadges();
+    this.rerenderVisible();
+    const s = SCHOOLS.find(x=>x.id===schoolId);
+    this.toast(`已加入第 ${state.zyList.length} 志愿:${s.name}`);
+  },
+  moveItem(i, d){
+    const j = i + d;
+    if(j<0 || j>=state.zyList.length) return;
+    [state.zyList[i], state.zyList[j]] = [state.zyList[j], state.zyList[i]];
+    store.set('list', state.zyList);
+    this.renderList();
+  },
+  removeItem(i){
+    state.zyList.splice(i,1);
+    store.set('list', state.zyList);
+    this.refreshBadges();
+    this.renderList();
+  },
+  clearList(){
+    if(!state.zyList.length) return;
+    if(!confirm('确定清空整张志愿表吗?')) return;
+    state.zyList = [];
+    store.set('list', state.zyList);
+    this.refreshBadges();
+    this.renderList();
+  },
+  renderList(){
+    const track = (state.profile && state.profile.track) || state.track;
+    $('#zyTrackTag').textContent = `(${BATCH_LINES[track].name} · ${state.zyList.length}/45)`;
+    $('#zyEmpty').hidden = state.zyList.length > 0;
+    $('#zyList').innerHTML = state.zyList.map((it,i)=>{
+      const s = SCHOOLS.find(x=>x.id===it.schoolId);
+      if(!s) return '';
+      let prob = '';
+      if(state.profile && state.profile.track===track){
+        const p = admitProb(state.profile.rank, rankOf(s.scores[track][2025],track));
+        const b = BAND_META[bandOf(p)];
+        prob = `<div class="zy-prob" style="color:${b.color}"><b>${Math.round(p*100)}%</b>${b.label}档</div>`;
+      }
+      return `
+      <div class="zy-item">
+        <div class="zy-no">${String(i+1).padStart(2,'0')}</div>
+        <div class="zy-info">
+          <div class="n">${esc(s.name)}</div>
+          <div class="m">${esc(s.prov)} · ${esc(s.city)} | ${esc(it.major)} | 2025投档 ${s.scores[track][2025]} 分</div>
+        </div>
+        ${prob}
+        <div class="zy-ctrl">
+          <button class="icon-btn" onclick="App.moveItem(${i},-1)" title="上移">↑</button>
+          <button class="icon-btn" onclick="App.moveItem(${i},1)" title="下移">↓</button>
+          <button class="icon-btn danger" onclick="App.removeItem(${i})" title="删除">✕</button>
+        </div>
+      </div>`;
+    }).join('');
+  },
+  exportCSV(){
+    if(!state.zyList.length){ this.toast('志愿表为空'); return; }
+    const track = (state.profile && state.profile.track) || state.track;
+    let csv = '﻿志愿序号,院校名称,省市,专业,2025投档分,2025位次\n';
+    state.zyList.forEach((it,i)=>{
+      const s = SCHOOLS.find(x=>x.id===it.schoolId);
+      csv += `${i+1},${s.name},${s.prov}${s.city},${it.major},${s.scores[track][2025]},${rankOf(s.scores[track][2025],track)}\n`;
+    });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8'}));
+    a.download = '我的志愿表.csv';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    this.toast('已导出 CSV');
+  },
+
+  /* ── 杂项 ── */
+  refreshBadges(){
+    const fb = $('#favBadge'), lb = $('#listBadge');
+    fb.hidden = !state.favs.size; fb.textContent = state.favs.size;
+    lb.hidden = !state.zyList.length; lb.textContent = state.zyList.length;
+  },
+  rerenderVisible(){
+    const cur = $('.page.on').id.replace('page-','');
+    if(cur==='schools') this.renderSchools();
+    if(cur==='fav') this.renderFavs();
+    if(cur==='home' && !$('#recArea').hidden) this.renderRec();
+    if(cur==='list') this.renderList();
+  },
+  toast(msg){
+    const el = document.createElement('div');
+    el.className = 'toast'; el.textContent = msg;
+    $('#toastBox').appendChild(el);
+    setTimeout(()=>{ el.style.opacity='0'; el.style.transition='.3s'; setTimeout(()=>el.remove(),300); }, 2200);
+  },
+
+  /* ── 初始化 ── */
+  init(){
+    // 主题
+    const theme = store.get('theme', matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.dataset.theme = theme;
+    $('#themeBtn').onclick = ()=>{
+      const t = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = t;
+      store.set('theme', t);
+    };
+    // 导航
+    $('#navTabs').addEventListener('click', e=>{
+      const t = e.target.closest('.nav-tab');
+      if(t) this.switchPage(t.dataset.page);
+    });
+    // 科类切换(首页)
+    $('#trackSeg').addEventListener('click', e=>{
+      const b = e.target.closest('button'); if(!b) return;
+      state.track = b.dataset.track;
+      $$('#trackSeg button').forEach(x=>x.classList.toggle('on', x===b));
+    });
+    // 一分一段科类
+    $('#rankTrackSeg').addEventListener('click', e=>{
+      const b = e.target.closest('button'); if(!b) return;
+      state.rankTrack = b.dataset.track;
+      $$('#rankTrackSeg button').forEach(x=>x.classList.toggle('on', x===b));
+      $('#bandSel').innerHTML = '';
+      this.renderRankTable();
+    });
+    $('#bandSel').addEventListener('change', ()=>this.renderRankTable());
+    // 推荐
+    $('#goBtn').onclick = ()=>this.generate();
+    $('#scoreInp').addEventListener('keydown', e=>{ if(e.key==='Enter') this.generate(); });
+    $('#recTabs').addEventListener('click', e=>{
+      const t = e.target.closest('.rec-tab'); if(!t) return;
+      state.recBand = t.dataset.band;
+      this.renderRec();
+    });
+    // 院校库筛选
+    $('#provSel').innerHTML += PROVINCES.map(p=>`<option>${p}</option>`).join('');
+    $('#typeSel').innerHTML += TYPES.map(t=>`<option>${t}</option>`).join('');
+    let deb;
+    $('#schSearch').addEventListener('input', e=>{
+      clearTimeout(deb);
+      deb = setTimeout(()=>{ state.schFilter.q = e.target.value.trim(); this.renderSchools(); }, 200);
+    });
+    $('#provSel').onchange = e=>{ state.schFilter.prov = e.target.value; this.renderSchools(); };
+    $('#typeSel').onchange = e=>{ state.schFilter.type = e.target.value; this.renderSchools(); };
+    $('#sortSel').onchange = e=>{ state.schFilter.sort = e.target.value; this.renderSchools(); };
+    $('#tagChips').addEventListener('click', e=>{
+      const c = e.target.closest('.chip'); if(!c) return;
+      state.schFilter.tag = c.dataset.tag;
+      $$('#tagChips .chip').forEach(x=>x.classList.toggle('on', x===c));
+      this.renderSchools();
+    });
+    // 专业库
+    let deb2;
+    $('#mjSearch').addEventListener('input', e=>{
+      clearTimeout(deb2);
+      deb2 = setTimeout(()=>{ state.mjFilter.q = e.target.value.trim(); this.renderMajors(); }, 200);
+    });
+    $('#mjChips').addEventListener('click', e=>{
+      const c = e.target.closest('.chip'); if(!c) return;
+      state.mjFilter.cat = c.dataset.cat;
+      $$('#mjChips .chip').forEach(x=>x.classList.toggle('on', x===c));
+      this.renderMajors();
+    });
+    // 弹窗遮罩点击关闭
+    $('#detailMask').addEventListener('click', e=>{ if(e.target===$('#detailMask')) this.closeDetail(); });
+    $('#cmpMask').addEventListener('click', e=>{ if(e.target===$('#cmpMask')) this.closeCmp(); });
+    document.addEventListener('keydown', e=>{
+      if(e.key==='Escape'){ this.closeDetail(); this.closeCmp(); }
+    });
+
+    this.renderLines();
+    this.refreshBadges();
+
+    // 恢复上次成绩
+    if(state.profile){
+      $('#scoreInp').value = state.profile.score;
+      state.track = state.profile.track;
+      $$('#trackSeg button').forEach(b=>b.classList.toggle('on', b.dataset.track===state.track));
+      this.buildRec();
+      $('#recArea').hidden = false;
+    }
+  },
+};
+
+App.init();
+</script>
+</body>
+</html>
